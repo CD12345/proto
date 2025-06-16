@@ -16,6 +16,7 @@ namespace PlanetSimulation
         private DispatcherTimer _timer;
         private const double G = 0.1; // gravitational constant
         private const int MaxPieces = 10000;
+        private const int GravityLimit = 1000; // disable gravity above this
 
         public MainWindow()
         {
@@ -41,8 +42,13 @@ namespace PlanetSimulation
             _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
             _timer.Tick += OnTick;
 
-            AddPlanet(new Point(200, 200), new Vector(0, 0), 20, Brushes.Red);
-            AddPlanet(new Point(600, 200), new Vector(0, 0), 20, Brushes.Blue);
+            const double startSpeed = 2.0;
+            Vector randVel1 = new Vector((_rand.NextDouble() - 0.5) * startSpeed,
+                                        (_rand.NextDouble() - 0.5) * startSpeed);
+            Vector randVel2 = new Vector((_rand.NextDouble() - 0.5) * startSpeed,
+                                        (_rand.NextDouble() - 0.5) * startSpeed);
+            AddPlanet(new Point(200, 200), randVel1, 20, Brushes.Red);
+            AddPlanet(new Point(600, 200), randVel2, 20, Brushes.Blue);
 
             _timer.Start();
         }
@@ -65,23 +71,26 @@ namespace PlanetSimulation
 
         private void OnTick(object sender, EventArgs e)
         {
-            // Apply gravitational forces
-            for (int i = 0; i < _planets.Count; i++)
+            // Apply gravitational forces only when the object count is manageable
+            if (_planets.Count < GravityLimit)
             {
-                for (int j = i + 1; j < _planets.Count; j++)
+                for (int i = 0; i < _planets.Count; i++)
                 {
-                    var p1 = _planets[i];
-                    var p2 = _planets[j];
-                    Vector delta = p2.Position - p1.Position;
-                    double dist2 = delta.X * delta.X + delta.Y * delta.Y;
-                    double dist = Math.Sqrt(dist2);
-                    if (dist == 0) continue;
-                    Vector dir = delta / dist;
-                    double force = G * p1.Mass * p2.Mass / dist2;
-                    Vector accel1 = dir * (force / p1.Mass);
-                    Vector accel2 = -dir * (force / p2.Mass);
-                    p1.Velocity += accel1;
-                    p2.Velocity += accel2;
+                    for (int j = i + 1; j < _planets.Count; j++)
+                    {
+                        var p1 = _planets[i];
+                        var p2 = _planets[j];
+                        Vector delta = p2.Position - p1.Position;
+                        double dist2 = delta.X * delta.X + delta.Y * delta.Y;
+                        double dist = Math.Sqrt(dist2);
+                        if (dist == 0) continue;
+                        Vector dir = delta / dist;
+                        double force = G * p1.Mass * p2.Mass / dist2;
+                        Vector accel1 = dir * (force / p1.Mass);
+                        Vector accel2 = -dir * (force / p2.Mass);
+                        p1.Velocity += accel1;
+                        p2.Velocity += accel2;
+                    }
                 }
             }
 
