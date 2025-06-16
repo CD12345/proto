@@ -132,8 +132,31 @@ namespace PlanetSimulation
             {
                 double radius = Math.Max(2, parent.Radius / 2);
                 Vector vel = parent.Velocity + new Vector(_rand.NextDouble() - 0.5, _rand.NextDouble() - 0.5);
-                AddPlanet(parent.Position, vel, radius, ((SolidColorBrush)parent.Shape.Fill));
+
+                Point pos;
+                int attempts = 0;
+                do
+                {
+                    double angle = _rand.NextDouble() * 2 * Math.PI;
+                    double dist = _rand.NextDouble() * parent.Radius * 2; // blast radius
+                    pos = new Point(parent.Position.X + dist * Math.Cos(angle), parent.Position.Y + dist * Math.Sin(angle));
+                    attempts++;
+                } while (OverlapsAny(pos, radius) && attempts < 50);
+
+                AddPlanet(pos, vel, radius, ((SolidColorBrush)parent.Shape.Fill));
             }
+        }
+
+        private bool OverlapsAny(Point pos, double radius)
+        {
+            foreach (var p in _planets)
+            {
+                Vector delta = p.Position - pos;
+                double dist = delta.Length;
+                if (dist < p.Radius + radius)
+                    return true;
+            }
+            return false;
         }
 
         private void Bounce(Planet p1, Planet p2)
