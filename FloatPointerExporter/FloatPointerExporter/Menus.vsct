@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" >
+  <Commands>
+    <Groups>
+      <Group guid="{8c1e03c3-64a9-4d6b-8f32-8e7a69a269b9}" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN" />
+      </Group>
+    </Groups>
+    <Buttons>
+      <Button guid="{8c1e03c3-64a9-4d6b-8f32-8e7a69a269b9}" id="ExportCommand" priority="0x0100" type="Button">
+        <Parent guid="{8c1e03c3-64a9-4d6b-8f32-8e7a69a269b9}" id="MyMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Export</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+  </Commands>
+  <Symbols>
+    <GuidSymbol name="{8c1e03c3-64a9-4d6b-8f32-8e7a69a269b9}" value="{8c1e03c3-64a9-4d6b-8f32-8e7a69a269b9}">
+      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <IDSymbol name="ExportCommand" value="0x0100" />
+    </GuidSymbol>
+    <GuidSymbol name="guidImages" value="{4153634c-1f00-4d75-bf94-5e7c9c80772a}" />
+  </Symbols>
+</CommandTable>
