@@ -3,6 +3,8 @@ workflows:
     name: ProtoApp iOS Build
     max_build_duration: 60
     environment:
+      groups:
+        - A
       xcode: latest
       vars:
         PROJECT_DIR: ProtoApp
@@ -30,4 +32,4 @@ workflows:
     publishing:
       email:
         recipients:
-          - $CM_EMAIL
+          - $CM_MAIL
