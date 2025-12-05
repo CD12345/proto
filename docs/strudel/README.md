@@ -14,9 +14,9 @@ This folder collects Strudel.cc sketches for musical ideas. You can copy any
 Adjust `setcps` or add effects to taste to suit your rendering context.
 
 ## Browser player
-- Open `index.html` in this folder to load the Strudel runtime from a CDN,
-  choose the C# minor sonata, and play any movement with play/pause/seek controls
-  in your browser.
+- Open `index.html` in this folder to load the bundled Strudel runtime
+  (v1.2.6), choose the C# minor sonata, and play any movement with
+  play/pause/seek controls in your browser.
 - When GitHub Pages is enabled for this repository with the `/docs` folder as the
   source, this player will be hosted at:
   `https://<your-username>.github.io/<this-repo>/strudel/`.
