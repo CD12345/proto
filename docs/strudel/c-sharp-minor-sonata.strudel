@@ -1,0 +1,47 @@
+// Sonata in C# minor (after Chopin) for Strudel.cc
+// Paste into https://strudel.cc, evaluate, and trigger `movement1`, `movement2`, or `movement3`.
+
+setcps(0.55)
+
+const pedal = (p) => room(0.35, size(0.45, legato(0.9, p)))
+const rubato = (p) => slow(1.05, superimpose(x => stut(2, 0.125, 1.08, x), p))
+const velvet = (p) => gain(0.9, p)
+
+// Movement I — restless nocturne
+const leftHandI = slow(2, n("c#2 g#2 a2 g#2 f#2 g#2").s("piano").gain(0.8))
+const rightHandI = fast(2, n("c#5 e5 g#5 b4 c#5 g#4 f#4 e4").s("piano").legato(0.95).gain(0.92))
+const haloI = slow(4, n("c#4 ~ g#3 ~ a3 ~ g#3 ~").s("piano").gain(0.7))
+
+const movement1 = pedal(rubato(velvet(stack([
+  leftHandI,
+  rightHandI,
+  haloI
+]))))
+
+// Movement II — singing lento (songful melody with inner sighs)
+const melodyII = slow(1.5, n("c#5 ~ e5 ~ g#5 ~ b4 ~ | c#5 ~ b4 ~ a4 ~ g#4 ~").s("piano").legato(0.98).gain(0.92))
+const echoII = superimpose(x => stut(2, 0.25, 1.05, x), n("g#4 ~ a4 ~ g#4 ~ e4 ~").s("piano").legato(0.85).gain(0.7))
+const bassII = slow(2, n("c#2 ~ g#2 ~ f#2 ~ g#2 ~").s("piano").gain(0.82))
+
+const movement2 = pedal(velvet(stack([
+  melodyII,
+  echoII,
+  bassII
+])))
+
+// Movement III — agitated finale
+const ostinatoIII = fast(2.5, n("c#3 g#3 c#4 g#3 c#3 g#3 c#4 g#3").s("piano").legato(0.8).gain(0.86))
+const fanfareIII = n("c#5 e5 g#5 b5 g#5 e5 c#5 e5 g#5 e5 c#5 b4").s("piano").fast(1.25).legato(0.9).gain(0.95)
+const answerIII = jux(rev, n("e5 d#5 c#5 b4 a4 g#4 f#4 g#4").s("piano").slow(1.5).legato(0.9).gain(0.9))
+const cadenceIII = slow(2, n("f#4 g#4 c#4 ~").s("piano").legato(0.85).gain(0.84))
+
+const movement3 = pedal(stack([
+  rubato(ostinatoIII),
+  rubato(fanfareIII),
+  answerIII,
+  cadenceIII
+]))
+
+// Play with: solo(movement1);
+// movement2.start();
+// stack([movement1, movement2, movement3]);
