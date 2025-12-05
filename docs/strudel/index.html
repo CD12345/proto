@@ -155,8 +155,8 @@
 
     async function loadStrudel() {
       try {
-        strudel = await import('https://cdn.jsdelivr.net/npm/@strudel.cycles/web@0.17.0/+esm');
-        const { WebAudioScheduler } = await import('https://cdn.jsdelivr.net/npm/@strudel.cycles/webaudio@0.17.0/+esm');
+        strudel = await import('./runtime/web/index.mjs');
+        const { WebAudioScheduler } = await import('./runtime/webaudio/index.mjs');
         scheduler = new WebAudioScheduler();
         await scheduler.start();
         runtimeStatus.textContent = 'Strudel ready';
