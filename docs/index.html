@@ -1,24 +1,363 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Proto – web assets</title>
-  <style>
-    body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin: 0; padding: 24px; }
-    h1 { margin-bottom: 8px; }
-    p { color: #4b5563; }
-    a { color: #2563eb; }
-    .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; max-width: 640px; background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strudel Music Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #eee;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        .song-selector {
+            margin-bottom: 30px;
+        }
+
+        .song-selector label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            color: #fff;
+        }
+
+        .song-selector select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+
+        .song-selector select:focus {
+            outline: none;
+            border-color: #f5576c;
+        }
+
+        .song-selector option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .code-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 200px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-display pre {
+            color: #a8ff60;
+            font-size: 0.95em;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-play {
+            background: linear-gradient(45deg, #56ab2f 0%, #a8e063 100%);
+            color: #1a1a2e;
+        }
+
+        .btn-play:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(168, 224, 99, 0.4);
+        }
+
+        .btn-stop {
+            background: linear-gradient(45deg, #eb3349 0%, #f45c43 100%);
+            color: #fff;
+        }
+
+        .btn-stop:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 92, 67, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            background: #666;
+        }
+
+        .status-indicator.playing {
+            background: #a8e063;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .info {
+            text-align: center;
+            color: #aaa;
+            font-size: 0.85em;
+            margin-top: 20px;
+        }
+
+        .error {
+            background: rgba(235, 51, 73, 0.2);
+            border: 1px solid #eb3349;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Proto web artifacts</h1>
-    <p>Browse the hosted resources available in this repository.</p>
-    <ul>
-      <li><a href="strudel/">Strudel sketches player</a> – play the C# minor sonata directly in the browser.</li>
-    </ul>
-  </div>
+    <div class="container">
+        <h1>🎵 Strudel Player</h1>
+        <p class="subtitle">Live Coding Music Environment</p>
+
+        <div class="song-selector">
+            <label for="songSelect">Select a Song:</label>
+            <select id="songSelect">
+                <option value="">-- Choose a composition --</option>
+            </select>
+        </div>
+
+        <div class="code-display">
+            <pre id="codeDisplay">// Select a song to see the code...</pre>
+        </div>
+
+        <div class="status">
+            <span class="status-indicator" id="statusIndicator"></span>
+            <span id="statusText">Ready</span>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-play" id="playBtn">▶ Play</button>
+            <button class="btn btn-stop" id="stopBtn">■ Stop</button>
+        </div>
+
+        <div class="error" id="errorDisplay"></div>
+
+        <div class="info">
+            Powered by <a href="https://strudel.cc" target="_blank" style="color: #f5576c;">Strudel</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { repl } from 'https://cdn.jsdelivr.net/npm/@strudel/repl@latest/index.mjs';
+
+        let currentRepl = null;
+        let currentPattern = null;
+        const songs = {};
+
+        const elements = {
+            songSelect: document.getElementById('songSelect'),
+            codeDisplay: document.getElementById('codeDisplay'),
+            playBtn: document.getElementById('playBtn'),
+            stopBtn: document.getElementById('stopBtn'),
+            statusIndicator: document.getElementById('statusIndicator'),
+            statusText: document.getElementById('statusText'),
+            errorDisplay: document.getElementById('errorDisplay')
+        };
+
+        async function loadSongs() {
+            const songFiles = [
+                'techno-beat.strudel',
+                'ambient-waves.strudel',
+                'jazz-improv.strudel',
+                'percussion-groove.strudel',
+                'melodic-patterns.strudel'
+            ];
+
+            for (const file of songFiles) {
+                try {
+                    const response = await fetch(`strudel/songs/${file}`);
+                    if (response.ok) {
+                        const code = await response.text();
+                        const name = file.replace('.strudel', '').replace(/-/g, ' ');
+                        songs[file] = { name, code };
+
+                        const option = document.createElement('option');
+                        option.value = file;
+                        option.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+                        elements.songSelect.appendChild(option);
+                    }
+                } catch (error) {
+                    console.error(`Failed to load ${file}:`, error);
+                }
+            }
+        }
+
+        async function initStrudel() {
+            try {
+                currentRepl = await repl({
+                    defaultOutput: 'webaudio',
+                    prebake: true
+                });
+                updateStatus('Ready', false);
+            } catch (error) {
+                showError('Failed to initialize Strudel: ' + error.message);
+            }
+        }
+
+        function updateStatus(text, isPlaying) {
+            elements.statusText.textContent = text;
+            if (isPlaying) {
+                elements.statusIndicator.classList.add('playing');
+            } else {
+                elements.statusIndicator.classList.remove('playing');
+            }
+        }
+
+        function showError(message) {
+            elements.errorDisplay.textContent = '⚠ ' + message;
+            elements.errorDisplay.classList.add('show');
+            setTimeout(() => {
+                elements.errorDisplay.classList.remove('show');
+            }, 5000);
+        }
+
+        elements.songSelect.addEventListener('change', (e) => {
+            const songFile = e.target.value;
+            if (songFile && songs[songFile]) {
+                elements.codeDisplay.textContent = songs[songFile].code;
+                if (currentPattern) {
+                    stop();
+                }
+            } else {
+                elements.codeDisplay.textContent = '// Select a song to see the code...';
+            }
+        });
+
+        elements.playBtn.addEventListener('click', async () => {
+            const songFile = elements.songSelect.value;
+            if (!songFile) {
+                showError('Please select a song first');
+                return;
+            }
+
+            try {
+                elements.playBtn.disabled = true;
+
+                if (!currentRepl) {
+                    await initStrudel();
+                }
+
+                const code = songs[songFile].code;
+                currentPattern = await currentRepl.evaluate(code);
+
+                updateStatus(`Playing: ${songs[songFile].name}`, true);
+                elements.stopBtn.disabled = false;
+            } catch (error) {
+                showError('Playback error: ' + error.message);
+                updateStatus('Error', false);
+            } finally {
+                elements.playBtn.disabled = false;
+            }
+        });
+
+        elements.stopBtn.addEventListener('click', () => {
+            stop();
+        });
+
+        function stop() {
+            if (currentPattern) {
+                currentPattern.stop();
+                currentPattern = null;
+                updateStatus('Stopped', false);
+                elements.stopBtn.disabled = true;
+            }
+        }
+
+        // Initialize
+        loadSongs();
+        initStrudel();
+    </script>
 </body>
 </html>

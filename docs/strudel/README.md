@@ -1,22 +1,37 @@
-# Strudel.cc sketches
+# Strudel Music Player
 
-This folder collects Strudel.cc sketches for musical ideas. You can copy any
-`.strudel` file into https://strudel.cc to audition the patterns.
+A web-based player for Strudel live coding music compositions.
 
-## Sonata in C# minor (after Chopin)
-- `c-sharp-minor-sonata.strudel` defines three movements designed for the Strudel
-  piano sampler.
-- Paste the entire file into Strudel.cc, then trigger `movement1`, `movement2`,
-  or `movement3` in the console. Use `solo(movementX)` to focus on a single
-  movement or `stack([movement1, movement2, movement3])` for a continuous
-  traversal.
+## Features
 
-Adjust `setcps` or add effects to taste to suit your rendering context.
+- 🎵 Song selection dropdown
+- ▶️ Play/Stop controls
+- 📝 Live code display
+- 🎨 Beautiful gradient UI
+- 🔊 Web Audio API powered playback
 
-## Browser player
-- Open `index.html` in this folder to load the bundled Strudel runtime
-  (v1.2.6), choose the C# minor sonata, and play any movement with
-  play/pause/seek controls in your browser.
-- When GitHub Pages is enabled for this repository with the `/docs` folder as the
-  source, this player will be hosted at:
-  `https://<your-username>.github.io/<this-repo>/strudel/`.
+## Songs Included
+
+1. **Techno Beat** - Driving electronic rhythm with kick, hi-hat, snare, and clap
+2. **Ambient Waves** - Ethereal soundscape with layered synthesizers
+3. **Jazz Improv** - Swing rhythms with walking bass and melodic improvisation
+4. **Percussion Groove** - Polyrhythmic drum patterns
+5. **Melodic Patterns** - Arpeggiated sequences with filter modulation
+
+## How to Use
+
+1. Open `index.html` in a web browser
+2. Select a song from the dropdown menu
+3. Click "Play" to start playback
+4. Click "Stop" to halt playback
+5. The code display shows the Strudel pattern code for each song
+
+## Technology
+
+- **Strudel** - Live coding pattern language for music
+- **Web Audio API** - Browser-based audio synthesis
+- **ES Modules** - Modern JavaScript module system
+
+## About Strudel
+
+Strudel is a live coding environment for algorithmic music patterns. Learn more at [strudel.cc](https://strudel.cc)
