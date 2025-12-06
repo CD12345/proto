@@ -1,4 +1,6 @@
-// Melodic Patterns - Arpeggiated sequences
+export const song = {
+  name: 'Melodic Patterns',
+  code: `// Melodic Patterns - Arpeggiated sequences
 stack(
   note("c4 e4 g4 b4 c5 b4 g4 e4")
     .s("square")
@@ -14,4 +16,5 @@ stack(
     .gain(0.7),
   sound("~ ~ hh ~")
     .gain(0.4)
-).cpm(140)
+).cpm(140)`
+};

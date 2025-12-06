@@ -1,4 +1,6 @@
-// Techno Beat - Driving electronic rhythm
+export const song = {
+  name: 'Techno Beat',
+  code: `// Techno Beat - Driving electronic rhythm
 stack(
   sound("bd*4")
     .gain(0.8),
@@ -11,4 +13,5 @@ stack(
     .delay(0.3)
     .delaytime(0.125)
     .delayfeedback(0.4)
-).cpm(128)
+).cpm(128)`
+};

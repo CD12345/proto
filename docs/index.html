@@ -248,28 +248,24 @@
 
         async function loadSongs() {
             const songFiles = [
-                'techno-beat.strudel',
-                'ambient-waves.strudel',
-                'jazz-improv.strudel',
-                'percussion-groove.strudel',
-                'melodic-patterns.strudel'
+                'techno-beat',
+                'ambient-waves',
+                'jazz-improv',
+                'percussion-groove',
+                'melodic-patterns'
             ];
 
-            for (const file of songFiles) {
+            for (const songId of songFiles) {
                 try {
-                    const response = await fetch(`strudel/songs/${file}`);
-                    if (response.ok) {
-                        const code = await response.text();
-                        const name = file.replace('.strudel', '').replace(/-/g, ' ');
-                        songs[file] = { name, code };
+                    const module = await import(`./strudel/songs/${songId}.js`);
+                    songs[songId] = module.song;
 
-                        const option = document.createElement('option');
-                        option.value = file;
-                        option.textContent = name.charAt(0).toUpperCase() + name.slice(1);
-                        elements.songSelect.appendChild(option);
-                    }
+                    const option = document.createElement('option');
+                    option.value = songId;
+                    option.textContent = module.song.name;
+                    elements.songSelect.appendChild(option);
                 } catch (error) {
-                    console.error(`Failed to load ${file}:`, error);
+                    console.error(`Failed to load ${songId}:`, error);
                 }
             }
         }
@@ -304,9 +300,9 @@
         }
 
         elements.songSelect.addEventListener('change', (e) => {
-            const songFile = e.target.value;
-            if (songFile && songs[songFile]) {
-                elements.codeDisplay.textContent = songs[songFile].code;
+            const songId = e.target.value;
+            if (songId && songs[songId]) {
+                elements.codeDisplay.textContent = songs[songId].code;
                 if (currentPattern) {
                     stop();
                 }
@@ -316,8 +312,8 @@
         });
 
         elements.playBtn.addEventListener('click', async () => {
-            const songFile = elements.songSelect.value;
-            if (!songFile) {
+            const songId = elements.songSelect.value;
+            if (!songId) {
                 showError('Please select a song first');
                 return;
             }
@@ -329,10 +325,10 @@
                     await initStrudel();
                 }
 
-                const code = songs[songFile].code;
+                const code = songs[songId].code;
                 currentPattern = await currentRepl.evaluate(code);
 
-                updateStatus(`Playing: ${songs[songFile].name}`, true);
+                updateStatus(`Playing: ${songs[songId].name}`, true);
                 elements.stopBtn.disabled = false;
             } catch (error) {
                 showError('Playback error: ' + error.message);

@@ -1,4 +1,6 @@
-// Jazz Improv - Swing rhythms and walking bass
+export const song = {
+  name: 'Jazz Improv',
+  code: `// Jazz Improv - Swing rhythms and walking bass
 stack(
   note("<c3 eb3 g3 bb3>")
     .s("sawtooth")
@@ -15,4 +17,5 @@ stack(
     .speed("<1 0.9 1.1 0.95>"),
   sound("[~ hh]*4")
     .gain(0.3)
-).cpm(120)
+).cpm(120)`
+};
