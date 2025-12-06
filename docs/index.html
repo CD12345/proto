@@ -304,7 +304,10 @@
         </div>
 
         <div class="debug-console" id="debugConsole">
-            <h3>🐛 Debug Console</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="margin: 0;">🐛 Debug Console</h3>
+                <button class="btn" id="copyLogsBtn" style="padding: 6px 12px; font-size: 0.8em;">📋 Copy Logs</button>
+            </div>
             <div class="debug-log" id="debugLog"></div>
         </div>
     </div>
@@ -346,6 +349,24 @@
 
             // Store the addLog function globally for module to use
             window.initialDebugLog = addLog;
+
+            // Copy logs button functionality
+            document.getElementById('copyLogsBtn').addEventListener('click', function() {
+                const logText = Array.from(debugLog.children)
+                    .map(div => div.textContent)
+                    .join('\n');
+
+                navigator.clipboard.writeText(logText).then(function() {
+                    const btn = document.getElementById('copyLogsBtn');
+                    const originalText = btn.textContent;
+                    btn.textContent = '✓ Copied!';
+                    setTimeout(function() {
+                        btn.textContent = originalText;
+                    }, 2000);
+                }).catch(function(err) {
+                    addLog('Failed to copy logs: ' + err.message, 'error');
+                });
+            });
 
             // Detect if module script loads
             window.moduleScriptLoaded = false;
@@ -496,34 +517,52 @@
                 debugLog('✓ Core packages imported successfully', 'success');
                 debugLog('Setting up evaluation environment...', 'info');
 
+                debugLog('Setting up global scope...', 'info');
+
+                // Set up eval scope with all Strudel functions
+                await core.evalScope(
+                    core,
+                    mini,
+                    webaudio,
+                    transpiler
+                );
+
+                debugLog('✓ Global scope configured', 'success');
+
                 // Set up the REPL-like environment
                 currentRepl = {
                     core,
                     mini,
                     webaudio,
                     transpiler,
-                    scheduler: null,
+                    currentPattern: null,
                     evaluate: async function(code) {
                         debugLog('Transpiling code...', 'info');
                         const transpiledCode = transpiler.transpiler(code);
+                        debugLog('Transpiled to: ' + transpiledCode.substring(0, 100) + '...', 'info');
+
                         debugLog('Evaluating pattern...', 'info');
 
-                        // Create eval scope with all the Strudel functions
-                        const pattern = eval(transpiledCode);
-
-                        debugLog('Starting scheduler...', 'info');
-                        if (this.scheduler) {
-                            this.scheduler.stop();
+                        // Stop previous pattern if any
+                        if (this.currentPattern) {
+                            debugLog('Stopping previous pattern...', 'info');
+                            this.currentPattern.stop();
                         }
 
-                        // Start the pattern with webaudio output
-                        this.scheduler = pattern.seq();
-                        return this.scheduler;
+                        // Evaluate in global scope where Strudel functions are available
+                        const pattern = eval(transpiledCode);
+
+                        debugLog('Starting playback...', 'info');
+
+                        // Play the pattern
+                        this.currentPattern = pattern.play();
+
+                        return this.currentPattern;
                     },
                     stop: function() {
-                        if (this.scheduler) {
-                            this.scheduler.stop();
-                            this.scheduler = null;
+                        if (this.currentPattern) {
+                            this.currentPattern.stop();
+                            this.currentPattern = null;
                         }
                     }
                 };
@@ -561,7 +600,7 @@
             const songId = e.target.value;
             if (songId && songs[songId]) {
                 elements.codeDisplay.textContent = songs[songId].code;
-                if (currentPattern) {
+                if (currentRepl && currentRepl.currentPattern) {
                     stop();
                 }
             } else {
@@ -590,9 +629,9 @@
 
                 const code = songs[songId].code;
                 debugLog(`Evaluating code for ${songId}`, 'info');
-                currentPattern = await currentRepl.evaluate(code);
+                await currentRepl.evaluate(code);
 
-                debugLog(`Playback started successfully for: ${songs[songId].name}`, 'success');
+                debugLog(`✓ Playback started successfully for: ${songs[songId].name}`, 'success');
                 updateStatus(`Playing: ${songs[songId].name}`, true);
                 elements.stopBtn.disabled = false;
             } catch (error) {
@@ -610,9 +649,8 @@
         });
 
         function stop() {
-            if (currentPattern) {
-                currentPattern.stop();
-                currentPattern = null;
+            if (currentRepl) {
+                currentRepl.stop();
                 updateStatus('Stopped', false);
                 elements.stopBtn.disabled = true;
             }
