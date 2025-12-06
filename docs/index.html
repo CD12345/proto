@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strudel Music Player</title>
+    <script type="importmap">
+    {
+        "imports": {
+            "@strudel/core": "https://cdn.jsdelivr.net/npm/@strudel/core@latest/index.mjs",
+            "@strudel/mini": "https://cdn.jsdelivr.net/npm/@strudel/mini@latest/index.mjs",
+            "@strudel/webaudio": "https://cdn.jsdelivr.net/npm/@strudel/webaudio@latest/index.mjs",
+            "@strudel/serial": "https://cdn.jsdelivr.net/npm/@strudel/serial@latest/index.mjs",
+            "@strudel/csound": "https://cdn.jsdelivr.net/npm/@strudel/csound@latest/index.mjs",
+            "@strudel/osc": "https://cdn.jsdelivr.net/npm/@strudel/osc@latest/index.mjs",
+            "@strudel/soundfonts": "https://cdn.jsdelivr.net/npm/@strudel/soundfonts@latest/index.mjs",
+            "@strudel/transpiler": "https://cdn.jsdelivr.net/npm/@strudel/transpiler@latest/index.mjs",
+            "@strudel/tonal": "https://cdn.jsdelivr.net/npm/@strudel/tonal@latest/index.mjs"
+        }
+    }
+    </script>
     <style>
         * {
             margin: 0;
@@ -469,8 +484,20 @@
         async function initStrudel() {
             try {
                 debugLog('Importing Strudel from CDN...', 'info');
-                const strudelModule = await import('https://cdn.jsdelivr.net/npm/@strudel/repl@latest/index.mjs');
-                debugLog('✓ Strudel module imported successfully', 'success');
+                let strudelModule;
+
+                try {
+                    // Try with import map first (requires browser support for import maps)
+                    strudelModule = await import('https://cdn.jsdelivr.net/npm/@strudel/repl@latest/index.mjs');
+                    debugLog('✓ Strudel module imported successfully (with import map)', 'success');
+                } catch (importError) {
+                    debugLog(`Import map approach failed: ${importError.message}`, 'warning');
+                    debugLog('Trying esm.sh bundler fallback...', 'info');
+
+                    // Fallback to esm.sh which bundles dependencies automatically
+                    strudelModule = await import('https://esm.sh/@strudel/repl@latest');
+                    debugLog('✓ Strudel module imported successfully (via esm.sh)', 'success');
+                }
 
                 debugLog('Initializing Strudel REPL...', 'info');
                 currentRepl = await strudelModule.repl({
