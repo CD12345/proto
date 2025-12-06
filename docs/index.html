@@ -487,20 +487,43 @@
                 let strudelModule;
 
                 try {
-                    // Try with import map first (requires browser support for import maps)
-                    strudelModule = await import('https://cdn.jsdelivr.net/npm/@strudel/repl@latest/index.mjs');
-                    debugLog('✓ Strudel module imported successfully (with import map)', 'success');
-                } catch (importError) {
-                    debugLog(`Import map approach failed: ${importError.message}`, 'warning');
-                    debugLog('Trying esm.sh bundler fallback...', 'info');
+                    // Try Skypack which handles ESM conversion automatically
+                    debugLog('Trying Skypack CDN...', 'info');
+                    strudelModule = await import('https://cdn.skypack.dev/@strudel/repl');
+                    debugLog('✓ Strudel module imported successfully (via Skypack)', 'success');
+                } catch (skypackError) {
+                    debugLog(`Skypack failed: ${skypackError.message}`, 'warning');
 
-                    // Fallback to esm.sh which bundles dependencies automatically
-                    strudelModule = await import('https://esm.sh/@strudel/repl@latest');
-                    debugLog('✓ Strudel module imported successfully (via esm.sh)', 'success');
+                    try {
+                        // Try with import map
+                        debugLog('Trying with import map...', 'info');
+                        strudelModule = await import('https://cdn.jsdelivr.net/npm/@strudel/repl@latest/index.mjs');
+                        debugLog('✓ Strudel module imported successfully (with import map)', 'success');
+                    } catch (importError) {
+                        debugLog(`Import map failed: ${importError.message}`, 'warning');
+                        debugLog('Trying esm.sh bundler...', 'info');
+
+                        // Final fallback to esm.sh
+                        strudelModule = await import('https://esm.sh/@strudel/repl@latest');
+                        debugLog('✓ Strudel module imported successfully (via esm.sh)', 'success');
+                    }
                 }
 
+                // Debug what's actually in the module
+                debugLog('Module exports: ' + Object.keys(strudelModule).join(', '), 'info');
+                debugLog('Has repl function: ' + (typeof strudelModule.repl === 'function'), 'info');
+                debugLog('Has default export: ' + (strudelModule.default !== undefined), 'info');
+
                 debugLog('Initializing Strudel REPL...', 'info');
-                currentRepl = await strudelModule.repl({
+
+                // Try to find the repl function
+                let replFunc = strudelModule.repl || (strudelModule.default && strudelModule.default.repl) || strudelModule.default;
+
+                if (typeof replFunc !== 'function') {
+                    throw new Error('Could not find repl function in module exports');
+                }
+
+                currentRepl = await replFunc({
                     defaultOutput: 'webaudio',
                     prebake: true
                 });
