@@ -517,15 +517,10 @@
                 debugLog('✓ Core packages imported successfully', 'success');
                 debugLog('Setting up evaluation environment...', 'info');
 
-                debugLog('Setting up global scope...', 'info');
-
-                // Set up eval scope with all Strudel functions
-                await core.evalScope(
-                    core,
-                    mini,
-                    webaudio,
-                    transpiler
-                );
+                // Make Strudel functions globally available
+                Object.assign(window, core);
+                Object.assign(window, mini);
+                Object.assign(window, webaudio);
 
                 debugLog('✓ Global scope configured', 'success');
 
