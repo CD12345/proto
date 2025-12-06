@@ -355,12 +355,19 @@
                             addLog('iOS version is too old for ES6 modules (requires iOS 11+)', 'error');
                         }
                     }
+
+                    // Test if a simple inline module works
+                    addLog('Testing if inline module script works...', 'info');
+                    var testScript = document.createElement('script');
+                    testScript.type = 'module';
+                    testScript.textContent = 'window.initialDebugLog("✓ Inline module test successful!", "success");';
+                    document.body.appendChild(testScript);
                 }
             }, 1000);
         })();
     </script>
 
-    <script type="module" onerror="window.initialDebugLog('Module script error!', 'error')">
+    <script type="module">
         // Immediately log that module script started
         window.moduleScriptLoaded = true;
         const debugLog = window.initialDebugLog || console.log;
