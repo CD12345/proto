@@ -499,8 +499,21 @@
                     debugLog('✓ Strudel module imported successfully (via esm.sh)', 'success');
                 }
 
+                // Debug what's actually in the module
+                debugLog('Module exports: ' + Object.keys(strudelModule).join(', '), 'info');
+                debugLog('Has repl function: ' + (typeof strudelModule.repl === 'function'), 'info');
+                debugLog('Has default export: ' + (strudelModule.default !== undefined), 'info');
+
                 debugLog('Initializing Strudel REPL...', 'info');
-                currentRepl = await strudelModule.repl({
+
+                // Try to find the repl function
+                let replFunc = strudelModule.repl || (strudelModule.default && strudelModule.default.repl) || strudelModule.default;
+
+                if (typeof replFunc !== 'function') {
+                    throw new Error('Could not find repl function in module exports');
+                }
+
+                currentRepl = await replFunc({
                     defaultOutput: 'webaudio',
                     prebake: true
                 });
