@@ -331,11 +331,38 @@
 
             // Store the addLog function globally for module to use
             window.initialDebugLog = addLog;
+
+            // Detect if module script loads
+            window.moduleScriptLoaded = false;
+            setTimeout(function() {
+                if (!window.moduleScriptLoaded) {
+                    addLog('✗ ERROR: Module script did not execute!', 'error');
+                    addLog('This browser may not support ES6 modules', 'error');
+                    addLog('Browser info: ' + navigator.userAgent, 'info');
+                    addLog('Trying to detect module support...', 'info');
+
+                    // Test module support
+                    var script = document.createElement('script');
+                    var supportsModules = 'noModule' in script;
+                    addLog('Supports noModule attribute: ' + supportsModules, 'info');
+
+                    // Check if this is an old iOS version
+                    var match = navigator.userAgent.match(/OS (\d+)_/);
+                    if (match) {
+                        var iosVersion = parseInt(match[1]);
+                        addLog('iOS version detected: ' + iosVersion, 'info');
+                        if (iosVersion < 11) {
+                            addLog('iOS version is too old for ES6 modules (requires iOS 11+)', 'error');
+                        }
+                    }
+                }
+            }, 1000);
         })();
     </script>
 
-    <script type="module">
+    <script type="module" onerror="window.initialDebugLog('Module script error!', 'error')">
         // Immediately log that module script started
+        window.moduleScriptLoaded = true;
         const debugLog = window.initialDebugLog || console.log;
         debugLog('✓ Module script started executing', 'success');
 
