@@ -375,6 +375,9 @@
 
         async function loadSongs() {
             debugLog('Starting to load songs...', 'info');
+            debugLog(`Current page URL: ${window.location.href}`, 'info');
+            debugLog(`Base URL: ${window.location.origin}${window.location.pathname}`, 'info');
+
             const songFiles = [
                 'techno-beat',
                 'ambient-waves',
@@ -388,18 +391,19 @@
 
             for (const songId of songFiles) {
                 try {
-                    debugLog(`Loading song: ${songId}`, 'info');
+                    debugLog(`[${loadedCount + failedCount + 1}/${songFiles.length}] Loading song: ${songId}`, 'info');
                     const modulePath = `./strudel/songs/${songId}.js`;
-                    debugLog(`Module path: ${modulePath}`, 'info');
+                    debugLog(`  → Module path: ${modulePath}`, 'info');
 
                     const module = await import(modulePath);
+                    debugLog(`  → Import successful, checking exports...`, 'info');
 
                     if (!module.song) {
                         throw new Error(`Module ${songId} has no 'song' export`);
                     }
 
                     songs[songId] = module.song;
-                    debugLog(`Successfully loaded: ${module.song.name}`, 'success');
+                    debugLog(`  ✓ Successfully loaded: ${module.song.name}`, 'success');
 
                     const option = document.createElement('option');
                     option.value = songId;
@@ -408,12 +412,17 @@
                     loadedCount++;
                 } catch (error) {
                     failedCount++;
-                    debugLog(`Failed to load ${songId}: ${error.message}`, 'error');
-                    debugLog(`Error stack: ${error.stack}`, 'error');
+                    debugLog(`  ✗ Failed to load ${songId}: ${error.message}`, 'error');
+                    if (error.stack) {
+                        debugLog(`  Error stack: ${error.stack}`, 'error');
+                    }
                 }
             }
 
-            debugLog(`Song loading complete: ${loadedCount} succeeded, ${failedCount} failed`, loadedCount > 0 ? 'success' : 'error');
+            debugLog(`━━━ Song loading complete ━━━`, 'info');
+            debugLog(`  Succeeded: ${loadedCount}`, loadedCount > 0 ? 'success' : 'error');
+            debugLog(`  Failed: ${failedCount}`, failedCount > 0 ? 'warning' : 'info');
+            debugLog(`  Total options in dropdown: ${elements.songSelect.options.length}`, 'info');
         }
 
         async function initStrudel() {
@@ -513,17 +522,25 @@
         // Initialize
         debugLog('Module loaded, starting Strudel initialization...', 'info');
 
-        try {
-            loadSongs();
-        } catch (error) {
-            debugLog(`Error calling loadSongs: ${error.message}`, 'error');
-        }
+        (async function init() {
+            try {
+                debugLog('Calling loadSongs()...', 'info');
+                await loadSongs();
+                debugLog('loadSongs() completed', 'success');
+            } catch (error) {
+                debugLog(`Error calling loadSongs: ${error.message}`, 'error');
+                debugLog(`Stack: ${error.stack}`, 'error');
+            }
 
-        try {
-            initStrudel();
-        } catch (error) {
-            debugLog(`Error calling initStrudel: ${error.message}`, 'error');
-        }
+            try {
+                debugLog('Calling initStrudel()...', 'info');
+                await initStrudel();
+                debugLog('initStrudel() completed', 'success');
+            } catch (error) {
+                debugLog(`Error calling initStrudel: ${error.message}`, 'error');
+                debugLog(`Stack: ${error.stack}`, 'error');
+            }
+        })();
     </script>
 </body>
 </html>
