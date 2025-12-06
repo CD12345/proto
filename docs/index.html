@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strudel Music Player</title>
     <!-- Load Strudel Web library (recommended approach from docs) -->
-    <script src="https://unpkg.com/@strudel/web@1.0.3"></script>
+    <script src="https://unpkg.com/@strudel/web@1.2.5"></script>
     <style>
         * {
             margin: 0;
@@ -494,10 +494,16 @@
                 debugLog('Initializing Strudel (using recommended @strudel/web approach)...', 'info');
 
                 // Use the official initStrudel() function from @strudel/web
-                // Call it synchronously as shown in docs (it doesn't return a promise)
-                initStrudel();
+                // IMPORTANT: Load the dirt-samples so sound("bd"), sound("hh"), etc. work
+                // Without this, patterns using samples will play silently!
+                await initStrudel({
+                    prebake: () => {
+                        debugLog('Loading dirt-samples from GitHub...', 'info');
+                        return samples('github:tidalcycles/dirt-samples');
+                    }
+                });
 
-                debugLog('✓ Strudel initialized successfully', 'success');
+                debugLog('✓ Strudel initialized with samples loaded', 'success');
                 currentRepl = {
                     initialized: true
                 };
@@ -612,11 +618,13 @@
 
             try {
                 debugLog('Calling setupStrudel()...', 'info');
+                updateStatus('Loading samples...', false);
                 await setupStrudel();
                 debugLog('setupStrudel() completed', 'success');
             } catch (error) {
                 debugLog(`Error calling setupStrudel: ${error.message}`, 'error');
                 debugLog(`Stack: ${error.stack}`, 'error');
+                updateStatus('Failed to load - see console', false);
             }
         })();
     </script>
