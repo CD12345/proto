@@ -213,10 +213,6 @@
             font-size: 0.85em;
             max-height: 300px;
             overflow-y: auto;
-            display: none;
-        }
-
-        .debug-console.show {
             display: block;
         }
 
@@ -298,6 +294,46 @@
         </div>
     </div>
 
+    <script>
+        // Immediate initialization - runs before module loading
+        (function() {
+            const debugLog = document.getElementById('debugLog');
+            const modifiedTimeElement = document.getElementById('modifiedTime');
+
+            function addLog(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const div = document.createElement('div');
+                div.className = type;
+                div.textContent = `[${timestamp}] ${message}`;
+                debugLog.appendChild(div);
+                console.log(`[${type.toUpperCase()}] ${message}`);
+            }
+
+            // Set last modified time immediately
+            try {
+                const lastModified = new Date('2025-12-06T12:00:00');
+                modifiedTimeElement.textContent = lastModified.toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                addLog('✓ Last modified time set successfully', 'success');
+            } catch (error) {
+                addLog('✗ Error setting last modified time: ' + error.message, 'error');
+            }
+
+            addLog('✓ JavaScript is running!', 'success');
+            addLog('✓ Debug console initialized', 'success');
+            addLog('Browser: ' + navigator.userAgent.split(' ').slice(-2).join(' '), 'info');
+            addLog('Page URL: ' + window.location.href, 'info');
+
+            // Store the addLog function globally for module to use
+            window.initialDebugLog = addLog;
+        })();
+    </script>
+
     <script type="module">
         import { repl } from 'https://cdn.jsdelivr.net/npm/@strudel/repl@latest/index.mjs';
 
@@ -324,7 +360,6 @@
             div.className = type;
             div.textContent = `[${timestamp}] ${message}`;
             elements.debugLog.appendChild(div);
-            elements.debugConsole.classList.add('show');
             elements.debugLog.scrollTop = elements.debugLog.scrollHeight;
             console.log(`[${type.toUpperCase()}] ${message}`);
         }
@@ -476,7 +511,7 @@
         }
 
         // Initialize
-        debugLog('Page loaded, starting initialization...', 'info');
+        debugLog('Module loaded, starting Strudel initialization...', 'info');
 
         try {
             loadSongs();
@@ -488,27 +523,6 @@
             initStrudel();
         } catch (error) {
             debugLog(`Error calling initStrudel: ${error.message}`, 'error');
-        }
-
-        // Display last modified time
-        try {
-            debugLog('Setting last modified time...', 'info');
-            // NOTE: Update this date whenever the page is modified
-            const lastModified = new Date('2024-12-06T05:30:00');
-            const modifiedTimeElement = document.getElementById('modifiedTime');
-            if (!modifiedTimeElement) {
-                throw new Error('modifiedTime element not found');
-            }
-            modifiedTimeElement.textContent = lastModified.toLocaleString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            debugLog(`Last modified time set to: ${modifiedTimeElement.textContent}`, 'success');
-        } catch (error) {
-            debugLog(`Error setting last modified time: ${error.message}`, 'error');
         }
     </script>
 </body>
