@@ -335,7 +335,9 @@
     </script>
 
     <script type="module">
-        import { repl } from 'https://cdn.jsdelivr.net/npm/@strudel/repl@latest/index.mjs';
+        // Immediately log that module script started
+        const debugLog = window.initialDebugLog || console.log;
+        debugLog('✓ Module script started executing', 'success');
 
         let currentRepl = null;
         let currentPattern = null;
@@ -353,7 +355,7 @@
             debugLog: document.getElementById('debugLog')
         };
 
-        // Debug logging functions
+        // Debug logging function (override the const above)
         function debugLog(message, type = 'info') {
             const timestamp = new Date().toLocaleTimeString();
             const div = document.createElement('div');
@@ -431,16 +433,23 @@
 
         async function initStrudel() {
             try {
-                debugLog('Initializing Strudel...', 'info');
-                currentRepl = await repl({
+                debugLog('Importing Strudel from CDN...', 'info');
+                const strudelModule = await import('https://cdn.jsdelivr.net/npm/@strudel/repl@latest/index.mjs');
+                debugLog('✓ Strudel module imported successfully', 'success');
+
+                debugLog('Initializing Strudel REPL...', 'info');
+                currentRepl = await strudelModule.repl({
                     defaultOutput: 'webaudio',
                     prebake: true
                 });
-                debugLog('Strudel initialized successfully', 'success');
+                debugLog('✓ Strudel REPL initialized successfully', 'success');
                 updateStatus('Ready', false);
             } catch (error) {
-                debugLog(`Failed to initialize Strudel: ${error.message}`, 'error');
-                debugLog(`Error stack: ${error.stack}`, 'error');
+                debugLog(`✗ Failed to initialize Strudel: ${error.message}`, 'error');
+                debugLog(`Error type: ${error.constructor.name}`, 'error');
+                if (error.stack) {
+                    debugLog(`Stack trace: ${error.stack}`, 'error');
+                }
                 showError('Failed to initialize Strudel: ' + error.message);
             }
         }
