@@ -483,51 +483,52 @@
 
         async function initStrudel() {
             try {
-                debugLog('Importing Strudel from CDN...', 'info');
-                let strudelModule;
+                debugLog('Importing Strudel core packages...', 'info');
 
-                try {
-                    // Try Skypack which handles ESM conversion automatically
-                    debugLog('Trying Skypack CDN...', 'info');
-                    strudelModule = await import('https://cdn.skypack.dev/@strudel/repl');
-                    debugLog('✓ Strudel module imported successfully (via Skypack)', 'success');
-                } catch (skypackError) {
-                    debugLog(`Skypack failed: ${skypackError.message}`, 'warning');
+                // Import the actual packages we need
+                const [core, mini, webaudio, transpiler] = await Promise.all([
+                    import('https://cdn.skypack.dev/@strudel/core'),
+                    import('https://cdn.skypack.dev/@strudel/mini'),
+                    import('https://cdn.skypack.dev/@strudel/webaudio'),
+                    import('https://cdn.skypack.dev/@strudel/transpiler')
+                ]);
 
-                    try {
-                        // Try with import map
-                        debugLog('Trying with import map...', 'info');
-                        strudelModule = await import('https://cdn.jsdelivr.net/npm/@strudel/repl@latest/index.mjs');
-                        debugLog('✓ Strudel module imported successfully (with import map)', 'success');
-                    } catch (importError) {
-                        debugLog(`Import map failed: ${importError.message}`, 'warning');
-                        debugLog('Trying esm.sh bundler...', 'info');
+                debugLog('✓ Core packages imported successfully', 'success');
+                debugLog('Setting up evaluation environment...', 'info');
 
-                        // Final fallback to esm.sh
-                        strudelModule = await import('https://esm.sh/@strudel/repl@latest');
-                        debugLog('✓ Strudel module imported successfully (via esm.sh)', 'success');
+                // Set up the REPL-like environment
+                currentRepl = {
+                    core,
+                    mini,
+                    webaudio,
+                    transpiler,
+                    scheduler: null,
+                    evaluate: async function(code) {
+                        debugLog('Transpiling code...', 'info');
+                        const transpiledCode = transpiler.transpiler(code);
+                        debugLog('Evaluating pattern...', 'info');
+
+                        // Create eval scope with all the Strudel functions
+                        const pattern = eval(transpiledCode);
+
+                        debugLog('Starting scheduler...', 'info');
+                        if (this.scheduler) {
+                            this.scheduler.stop();
+                        }
+
+                        // Start the pattern with webaudio output
+                        this.scheduler = pattern.seq();
+                        return this.scheduler;
+                    },
+                    stop: function() {
+                        if (this.scheduler) {
+                            this.scheduler.stop();
+                            this.scheduler = null;
+                        }
                     }
-                }
+                };
 
-                // Debug what's actually in the module
-                debugLog('Module exports: ' + Object.keys(strudelModule).join(', '), 'info');
-                debugLog('Has repl function: ' + (typeof strudelModule.repl === 'function'), 'info');
-                debugLog('Has default export: ' + (strudelModule.default !== undefined), 'info');
-
-                debugLog('Initializing Strudel REPL...', 'info');
-
-                // Try to find the repl function
-                let replFunc = strudelModule.repl || (strudelModule.default && strudelModule.default.repl) || strudelModule.default;
-
-                if (typeof replFunc !== 'function') {
-                    throw new Error('Could not find repl function in module exports');
-                }
-
-                currentRepl = await replFunc({
-                    defaultOutput: 'webaudio',
-                    prebake: true
-                });
-                debugLog('✓ Strudel REPL initialized successfully', 'success');
+                debugLog('✓ Strudel initialized successfully', 'success');
                 updateStatus('Ready', false);
             } catch (error) {
                 debugLog(`✗ Failed to initialize Strudel: ${error.message}`, 'error');
