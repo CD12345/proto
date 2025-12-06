@@ -489,12 +489,13 @@
             debugLog(`  Total options in dropdown: ${elements.songSelect.options.length}`, 'info');
         }
 
-        async function initStrudel() {
+        async function setupStrudel() {
             try {
                 debugLog('Initializing Strudel (using recommended @strudel/web approach)...', 'info');
 
                 // Use the official initStrudel() function from @strudel/web
-                await window.initStrudel();
+                // Call it synchronously as shown in docs (it doesn't return a promise)
+                initStrudel();
 
                 debugLog('✓ Strudel initialized successfully', 'success');
                 currentRepl = {
@@ -555,7 +556,7 @@
 
                 if (!currentRepl) {
                     debugLog('Repl not initialized, initializing now...', 'warning');
-                    await initStrudel();
+                    await setupStrudel();
                 }
 
                 const code = songs[songId].code;
@@ -610,11 +611,11 @@
             }
 
             try {
-                debugLog('Calling initStrudel()...', 'info');
-                await initStrudel();
-                debugLog('initStrudel() completed', 'success');
+                debugLog('Calling setupStrudel()...', 'info');
+                await setupStrudel();
+                debugLog('setupStrudel() completed', 'success');
             } catch (error) {
-                debugLog(`Error calling initStrudel: ${error.message}`, 'error');
+                debugLog(`Error calling setupStrudel: ${error.message}`, 'error');
                 debugLog(`Stack: ${error.stack}`, 'error');
             }
         })();
