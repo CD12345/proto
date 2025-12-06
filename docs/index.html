@@ -4,21 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strudel Music Player</title>
-    <script type="importmap">
-    {
-        "imports": {
-            "@strudel/core": "https://cdn.jsdelivr.net/npm/@strudel/core@latest/index.mjs",
-            "@strudel/mini": "https://cdn.jsdelivr.net/npm/@strudel/mini@latest/index.mjs",
-            "@strudel/webaudio": "https://cdn.jsdelivr.net/npm/@strudel/webaudio@latest/index.mjs",
-            "@strudel/serial": "https://cdn.jsdelivr.net/npm/@strudel/serial@latest/index.mjs",
-            "@strudel/csound": "https://cdn.jsdelivr.net/npm/@strudel/csound@latest/index.mjs",
-            "@strudel/osc": "https://cdn.jsdelivr.net/npm/@strudel/osc@latest/index.mjs",
-            "@strudel/soundfonts": "https://cdn.jsdelivr.net/npm/@strudel/soundfonts@latest/index.mjs",
-            "@strudel/transpiler": "https://cdn.jsdelivr.net/npm/@strudel/transpiler@latest/index.mjs",
-            "@strudel/tonal": "https://cdn.jsdelivr.net/npm/@strudel/tonal@latest/index.mjs"
-        }
-    }
-    </script>
+    <!-- Load Strudel Web library (recommended approach from docs) -->
+    <script src="https://unpkg.com/@strudel/web@1.0.3"></script>
     <style>
         * {
             margin: 0;
@@ -504,65 +491,15 @@
 
         async function initStrudel() {
             try {
-                debugLog('Importing Strudel core packages...', 'info');
+                debugLog('Initializing Strudel (using recommended @strudel/web approach)...', 'info');
 
-                // Import the actual packages we need
-                const [core, mini, webaudio, transpiler] = await Promise.all([
-                    import('https://cdn.skypack.dev/@strudel/core'),
-                    import('https://cdn.skypack.dev/@strudel/mini'),
-                    import('https://cdn.skypack.dev/@strudel/webaudio'),
-                    import('https://cdn.skypack.dev/@strudel/transpiler')
-                ]);
-
-                debugLog('✓ Core packages imported successfully', 'success');
-                debugLog('Setting up evaluation environment...', 'info');
-
-                // Make Strudel functions globally available
-                Object.assign(window, core);
-                Object.assign(window, mini);
-                Object.assign(window, webaudio);
-
-                debugLog('✓ Global scope configured', 'success');
-
-                // Set up the REPL-like environment
-                currentRepl = {
-                    core,
-                    mini,
-                    webaudio,
-                    transpiler,
-                    currentPattern: null,
-                    evaluate: async function(code) {
-                        debugLog('Transpiling code...', 'info');
-                        const transpiledCode = transpiler.transpiler(code);
-                        debugLog('Transpiled to: ' + transpiledCode.substring(0, 100) + '...', 'info');
-
-                        debugLog('Evaluating pattern...', 'info');
-
-                        // Stop previous pattern if any
-                        if (this.currentPattern) {
-                            debugLog('Stopping previous pattern...', 'info');
-                            this.currentPattern.stop();
-                        }
-
-                        // Evaluate in global scope where Strudel functions are available
-                        const pattern = eval(transpiledCode);
-
-                        debugLog('Starting playback...', 'info');
-
-                        // Play the pattern
-                        this.currentPattern = pattern.play();
-
-                        return this.currentPattern;
-                    },
-                    stop: function() {
-                        if (this.currentPattern) {
-                            this.currentPattern.stop();
-                            this.currentPattern = null;
-                        }
-                    }
-                };
+                // Use the official initStrudel() function from @strudel/web
+                await window.initStrudel();
 
                 debugLog('✓ Strudel initialized successfully', 'success');
+                currentRepl = {
+                    initialized: true
+                };
                 updateStatus('Ready', false);
             } catch (error) {
                 debugLog(`✗ Failed to initialize Strudel: ${error.message}`, 'error');
@@ -595,9 +532,8 @@
             const songId = e.target.value;
             if (songId && songs[songId]) {
                 elements.codeDisplay.textContent = songs[songId].code;
-                if (currentRepl && currentRepl.currentPattern) {
-                    stop();
-                }
+                // Stop current playback when switching songs
+                stop();
             } else {
                 elements.codeDisplay.textContent = '// Select a song to see the code...';
             }
@@ -623,8 +559,11 @@
                 }
 
                 const code = songs[songId].code;
-                debugLog(`Evaluating code for ${songId}`, 'info');
-                await currentRepl.evaluate(code);
+                debugLog(`Playing pattern for ${songId}`, 'info');
+                debugLog(`Code: ${code.substring(0, 100)}...`, 'info');
+
+                // Evaluate the code directly - Strudel functions are globally available
+                eval(code);
 
                 debugLog(`✓ Playback started successfully for: ${songs[songId].name}`, 'success');
                 updateStatus(`Playing: ${songs[songId].name}`, true);
@@ -644,8 +583,12 @@
         });
 
         function stop() {
-            if (currentRepl) {
-                currentRepl.stop();
+            if (currentRepl && currentRepl.initialized) {
+                // Use Strudel's global hush() function to stop all patterns
+                if (typeof hush === 'function') {
+                    hush();
+                    debugLog('Stopped playback using hush()', 'info');
+                }
                 updateStatus('Stopped', false);
                 elements.stopBtn.disabled = true;
             }
