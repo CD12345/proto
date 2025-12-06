@@ -376,7 +376,10 @@
         async function loadSongs() {
             debugLog('Starting to load songs...', 'info');
             debugLog(`Current page URL: ${window.location.href}`, 'info');
-            debugLog(`Base URL: ${window.location.origin}${window.location.pathname}`, 'info');
+
+            // Construct base URL for the page directory
+            const baseUrl = window.location.href.replace(/\/[^\/]*$/, '/');
+            debugLog(`Base URL: ${baseUrl}`, 'info');
 
             const songFiles = [
                 'techno-beat',
@@ -392,7 +395,8 @@
             for (const songId of songFiles) {
                 try {
                     debugLog(`[${loadedCount + failedCount + 1}/${songFiles.length}] Loading song: ${songId}`, 'info');
-                    const modulePath = `./strudel/songs/${songId}.js`;
+                    // Use absolute URL for module import
+                    const modulePath = `${baseUrl}strudel/songs/${songId}.js`;
                     debugLog(`  → Module path: ${modulePath}`, 'info');
 
                     const module = await import(modulePath);
