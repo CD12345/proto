@@ -562,8 +562,10 @@
                 debugLog(`Playing pattern for ${songId}`, 'info');
                 debugLog(`Code: ${code.substring(0, 100)}...`, 'info');
 
-                // Evaluate the code directly - Strudel functions are globally available
-                eval(code);
+                // Evaluate the code to get the pattern, then call .play() on it
+                const pattern = eval(code);
+                debugLog('Pattern created, calling .play()...', 'info');
+                pattern.play();
 
                 debugLog(`✓ Playback started successfully for: ${songs[songId].name}`, 'success');
                 updateStatus(`Playing: ${songs[songId].name}`, true);
