@@ -1,4 +1,6 @@
-// Percussion Groove - Polyrhythmic drums
+export const song = {
+  name: 'Percussion Groove',
+  code: `// Percussion Groove - Polyrhythmic drums
 stack(
   sound("bd*4")
     .gain(0.9),
@@ -13,4 +15,5 @@ stack(
     .speed(rand.range(0.9, 1.1)),
   sound("~ [~ shaker]*2 ~")
     .gain(0.35)
-).cpm(110)
+).cpm(110)`
+};

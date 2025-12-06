@@ -1,4 +1,6 @@
-// Ambient Waves - Ethereal soundscape
+export const song = {
+  name: 'Ambient Waves',
+  code: `// Ambient Waves - Ethereal soundscape
 stack(
   note("<c2 g2 f2 e2>")
     .s("sawtooth")
@@ -17,4 +19,5 @@ stack(
     .delay(0.7)
     .delaytime(0.375)
     .slow(4)
-).cpm(60)
+).cpm(60)`
+};
