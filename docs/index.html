@@ -311,7 +311,7 @@
 
             // Set last modified time immediately
             try {
-                const lastModified = new Date('2025-12-06T12:00:00');
+                const lastModified = new Date(document.lastModified);
                 modifiedTimeElement.textContent = lastModified.toLocaleString('en-US', {
                     year: 'numeric',
                     month: 'long',
