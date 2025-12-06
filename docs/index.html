@@ -203,6 +203,57 @@
         .error.show {
             display: block;
         }
+
+        .debug-console {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 0.85em;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .debug-console.show {
+            display: block;
+        }
+
+        .debug-console h3 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .debug-log {
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+
+        .debug-log div {
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .debug-log .error {
+            color: #ff6b6b;
+            display: block;
+            border: none;
+        }
+
+        .debug-log .info {
+            color: #4ecdc4;
+            text-align: left;
+        }
+
+        .debug-log .success {
+            color: #a8e063;
+        }
+
+        .debug-log .warning {
+            color: #ffa500;
+        }
     </style>
 </head>
 <body>
@@ -240,6 +291,11 @@
         <div class="last-modified" id="lastModified">
             Last modified: <span id="modifiedTime"></span>
         </div>
+
+        <div class="debug-console" id="debugConsole">
+            <h3>🐛 Debug Console</h3>
+            <div class="debug-log" id="debugLog"></div>
+        </div>
     </div>
 
     <script type="module">
@@ -256,10 +312,34 @@
             stopBtn: document.getElementById('stopBtn'),
             statusIndicator: document.getElementById('statusIndicator'),
             statusText: document.getElementById('statusText'),
-            errorDisplay: document.getElementById('errorDisplay')
+            errorDisplay: document.getElementById('errorDisplay'),
+            debugConsole: document.getElementById('debugConsole'),
+            debugLog: document.getElementById('debugLog')
         };
 
+        // Debug logging functions
+        function debugLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = `[${timestamp}] ${message}`;
+            elements.debugLog.appendChild(div);
+            elements.debugConsole.classList.add('show');
+            elements.debugLog.scrollTop = elements.debugLog.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        // Global error handler
+        window.addEventListener('error', (event) => {
+            debugLog(`Global error: ${event.message} at ${event.filename}:${event.lineno}`, 'error');
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            debugLog(`Unhandled promise rejection: ${event.reason}`, 'error');
+        });
+
         async function loadSongs() {
+            debugLog('Starting to load songs...', 'info');
             const songFiles = [
                 'techno-beat',
                 'ambient-waves',
@@ -268,29 +348,51 @@
                 'melodic-patterns'
             ];
 
+            let loadedCount = 0;
+            let failedCount = 0;
+
             for (const songId of songFiles) {
                 try {
-                    const module = await import(`./strudel/songs/${songId}.js`);
+                    debugLog(`Loading song: ${songId}`, 'info');
+                    const modulePath = `./strudel/songs/${songId}.js`;
+                    debugLog(`Module path: ${modulePath}`, 'info');
+
+                    const module = await import(modulePath);
+
+                    if (!module.song) {
+                        throw new Error(`Module ${songId} has no 'song' export`);
+                    }
+
                     songs[songId] = module.song;
+                    debugLog(`Successfully loaded: ${module.song.name}`, 'success');
 
                     const option = document.createElement('option');
                     option.value = songId;
                     option.textContent = module.song.name;
                     elements.songSelect.appendChild(option);
+                    loadedCount++;
                 } catch (error) {
-                    console.error(`Failed to load ${songId}:`, error);
+                    failedCount++;
+                    debugLog(`Failed to load ${songId}: ${error.message}`, 'error');
+                    debugLog(`Error stack: ${error.stack}`, 'error');
                 }
             }
+
+            debugLog(`Song loading complete: ${loadedCount} succeeded, ${failedCount} failed`, loadedCount > 0 ? 'success' : 'error');
         }
 
         async function initStrudel() {
             try {
+                debugLog('Initializing Strudel...', 'info');
                 currentRepl = await repl({
                     defaultOutput: 'webaudio',
                     prebake: true
                 });
+                debugLog('Strudel initialized successfully', 'success');
                 updateStatus('Ready', false);
             } catch (error) {
+                debugLog(`Failed to initialize Strudel: ${error.message}`, 'error');
+                debugLog(`Error stack: ${error.stack}`, 'error');
                 showError('Failed to initialize Strudel: ' + error.message);
             }
         }
@@ -326,24 +428,33 @@
 
         elements.playBtn.addEventListener('click', async () => {
             const songId = elements.songSelect.value;
+            debugLog(`Play button clicked. Selected song: ${songId}`, 'info');
+
             if (!songId) {
+                debugLog('No song selected', 'warning');
                 showError('Please select a song first');
                 return;
             }
 
             try {
                 elements.playBtn.disabled = true;
+                debugLog(`Attempting to play: ${songId}`, 'info');
 
                 if (!currentRepl) {
+                    debugLog('Repl not initialized, initializing now...', 'warning');
                     await initStrudel();
                 }
 
                 const code = songs[songId].code;
+                debugLog(`Evaluating code for ${songId}`, 'info');
                 currentPattern = await currentRepl.evaluate(code);
 
+                debugLog(`Playback started successfully for: ${songs[songId].name}`, 'success');
                 updateStatus(`Playing: ${songs[songId].name}`, true);
                 elements.stopBtn.disabled = false;
             } catch (error) {
+                debugLog(`Playback error: ${error.message}`, 'error');
+                debugLog(`Error stack: ${error.stack}`, 'error');
                 showError('Playback error: ' + error.message);
                 updateStatus('Error', false);
             } finally {
@@ -365,20 +476,40 @@
         }
 
         // Initialize
-        loadSongs();
-        initStrudel();
+        debugLog('Page loaded, starting initialization...', 'info');
+
+        try {
+            loadSongs();
+        } catch (error) {
+            debugLog(`Error calling loadSongs: ${error.message}`, 'error');
+        }
+
+        try {
+            initStrudel();
+        } catch (error) {
+            debugLog(`Error calling initStrudel: ${error.message}`, 'error');
+        }
 
         // Display last modified time
-        // NOTE: Update this date whenever the page is modified
-        const lastModified = new Date('2024-12-06T05:30:00');
-        const modifiedTimeElement = document.getElementById('modifiedTime');
-        modifiedTimeElement.textContent = lastModified.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        try {
+            debugLog('Setting last modified time...', 'info');
+            // NOTE: Update this date whenever the page is modified
+            const lastModified = new Date('2024-12-06T05:30:00');
+            const modifiedTimeElement = document.getElementById('modifiedTime');
+            if (!modifiedTimeElement) {
+                throw new Error('modifiedTime element not found');
+            }
+            modifiedTimeElement.textContent = lastModified.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            debugLog(`Last modified time set to: ${modifiedTimeElement.textContent}`, 'success');
+        } catch (error) {
+            debugLog(`Error setting last modified time: ${error.message}`, 'error');
+        }
     </script>
 </body>
 </html>
