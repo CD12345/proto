@@ -370,8 +370,9 @@
     <script type="module">
         // Immediately log that module script started
         window.moduleScriptLoaded = true;
-        const debugLog = window.initialDebugLog || console.log;
-        debugLog('✓ Module script started executing', 'success');
+        if (window.initialDebugLog) {
+            window.initialDebugLog('✓ Module script started executing', 'success');
+        }
 
         let currentRepl = null;
         let currentPattern = null;
@@ -389,7 +390,7 @@
             debugLog: document.getElementById('debugLog')
         };
 
-        // Debug logging function (override the const above)
+        // Debug logging function
         function debugLog(message, type = 'info') {
             const timestamp = new Date().toLocaleTimeString();
             const div = document.createElement('div');
