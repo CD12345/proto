@@ -234,7 +234,110 @@
 
         let currentRepl = null;
         let currentPattern = null;
-        const songs = {};
+
+        // Embedded songs
+        const songs = {
+            'techno-beat': {
+                name: 'Techno Beat',
+                code: `// Techno Beat - Driving electronic rhythm
+stack(
+  sound("bd*4")
+    .gain(0.8),
+  sound("~ hh*2")
+    .gain(0.5),
+  sound("[~ sd]*2")
+    .gain(0.6),
+  sound("~ ~ ~ cp")
+    .gain(0.7)
+    .delay(0.3)
+    .delaytime(0.125)
+    .delayfeedback(0.4)
+).cpm(128)`
+            },
+            'ambient-waves': {
+                name: 'Ambient Waves',
+                code: `// Ambient Waves - Ethereal soundscape
+stack(
+  note("<c2 g2 f2 e2>")
+    .s("sawtooth")
+    .lpf(800)
+    .gain(0.4)
+    .room(0.9)
+    .delay(0.5),
+  note("<e3 g3 d3 c3>")
+    .s("triangle")
+    .lpf(1200)
+    .gain(0.3)
+    .slow(2),
+  note("c4 e4 g4 a4")
+    .s("sine")
+    .gain(0.25)
+    .delay(0.7)
+    .delaytime(0.375)
+    .slow(4)
+).cpm(60)`
+            },
+            'jazz-improv': {
+                name: 'Jazz Improv',
+                code: `// Jazz Improv - Swing rhythms and walking bass
+stack(
+  note("<c3 eb3 g3 bb3>")
+    .s("sawtooth")
+    .lpf(600)
+    .gain(0.5)
+    .room(0.3),
+  note("c5 d5 e5 g5 a5 g5 e5 d5")
+    .s("triangle")
+    .gain(0.4)
+    .delay(0.2)
+    .fast(2),
+  sound("jazz:0*4")
+    .gain(0.6)
+    .speed("<1 0.9 1.1 0.95>"),
+  sound("[~ hh]*4")
+    .gain(0.3)
+).cpm(120)`
+            },
+            'percussion-groove': {
+                name: 'Percussion Groove',
+                code: `// Percussion Groove - Polyrhythmic drums
+stack(
+  sound("bd*4")
+    .gain(0.9),
+  sound("~ sd ~ sd")
+    .gain(0.7),
+  sound("hh*8")
+    .gain(0.4),
+  sound("~ ~ cp ~")
+    .gain(0.6),
+  sound("[~ ~ ~]*3 tabla:2")
+    .gain(0.5)
+    .speed(rand.range(0.9, 1.1)),
+  sound("~ [~ shaker]*2 ~")
+    .gain(0.35)
+).cpm(110)`
+            },
+            'melodic-patterns': {
+                name: 'Melodic Patterns',
+                code: `// Melodic Patterns - Arpeggiated sequences
+stack(
+  note("c4 e4 g4 b4 c5 b4 g4 e4")
+    .s("square")
+    .lpf(sine.range(400, 2000).slow(8))
+    .gain(0.4)
+    .delay(0.4)
+    .delaytime(0.25),
+  note("<c2 a1 f2 g2>")
+    .s("sawtooth")
+    .lpf(300)
+    .gain(0.5),
+  sound("bd ~ ~ ~")
+    .gain(0.7),
+  sound("~ ~ hh ~")
+    .gain(0.4)
+).cpm(140)`
+            }
+        };
 
         const elements = {
             songSelect: document.getElementById('songSelect'),
@@ -246,31 +349,12 @@
             errorDisplay: document.getElementById('errorDisplay')
         };
 
-        async function loadSongs() {
-            const songFiles = [
-                'techno-beat.strudel',
-                'ambient-waves.strudel',
-                'jazz-improv.strudel',
-                'percussion-groove.strudel',
-                'melodic-patterns.strudel'
-            ];
-
-            for (const file of songFiles) {
-                try {
-                    const response = await fetch(`strudel/songs/${file}`);
-                    if (response.ok) {
-                        const code = await response.text();
-                        const name = file.replace('.strudel', '').replace(/-/g, ' ');
-                        songs[file] = { name, code };
-
-                        const option = document.createElement('option');
-                        option.value = file;
-                        option.textContent = name.charAt(0).toUpperCase() + name.slice(1);
-                        elements.songSelect.appendChild(option);
-                    }
-                } catch (error) {
-                    console.error(`Failed to load ${file}:`, error);
-                }
+        function loadSongs() {
+            for (const [key, song] of Object.entries(songs)) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = song.name;
+                elements.songSelect.appendChild(option);
             }
         }
 
@@ -304,9 +388,9 @@
         }
 
         elements.songSelect.addEventListener('change', (e) => {
-            const songFile = e.target.value;
-            if (songFile && songs[songFile]) {
-                elements.codeDisplay.textContent = songs[songFile].code;
+            const songKey = e.target.value;
+            if (songKey && songs[songKey]) {
+                elements.codeDisplay.textContent = songs[songKey].code;
                 if (currentPattern) {
                     stop();
                 }
@@ -316,8 +400,8 @@
         });
 
         elements.playBtn.addEventListener('click', async () => {
-            const songFile = elements.songSelect.value;
-            if (!songFile) {
+            const songKey = elements.songSelect.value;
+            if (!songKey) {
                 showError('Please select a song first');
                 return;
             }
@@ -329,10 +413,10 @@
                     await initStrudel();
                 }
 
-                const code = songs[songFile].code;
+                const code = songs[songKey].code;
                 currentPattern = await currentRepl.evaluate(code);
 
-                updateStatus(`Playing: ${songs[songFile].name}`, true);
+                updateStatus(`Playing: ${songs[songKey].name}`, true);
                 elements.stopBtn.disabled = false;
             } catch (error) {
                 showError('Playback error: ' + error.message);
