@@ -369,7 +369,8 @@
         initStrudel();
 
         // Display last modified time
-        const lastModified = new Date(document.lastModified);
+        // NOTE: Update this date whenever the page is modified
+        const lastModified = new Date('2024-12-06T05:30:00');
         const modifiedTimeElement = document.getElementById('modifiedTime');
         modifiedTimeElement.textContent = lastModified.toLocaleString('en-US', {
             year: 'numeric',
