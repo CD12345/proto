@@ -434,59 +434,45 @@
         });
 
         async function loadSongs() {
-            debugLog('Starting to load songs...', 'info');
+            debugLog('Starting to load songs from manifest...', 'info');
             debugLog(`Current page URL: ${window.location.href}`, 'info');
 
             // Construct base URL for the page directory
             const baseUrl = window.location.href.replace(/\/[^\/]*$/, '/');
             debugLog(`Base URL: ${baseUrl}`, 'info');
 
-            const songFiles = [
-                'techno-beat',
-                'ambient-waves',
-                'jazz-improv',
-                'percussion-groove',
-                'melodic-patterns'
-            ];
+            try {
+                // Load songs from the manifest file (single source of truth)
+                const manifestPath = `${baseUrl}strudel/songs/index.js`;
+                debugLog(`Loading manifest: ${manifestPath}`, 'info');
 
-            let loadedCount = 0;
-            let failedCount = 0;
+                const manifest = await import(manifestPath);
 
-            for (const songId of songFiles) {
-                try {
-                    debugLog(`[${loadedCount + failedCount + 1}/${songFiles.length}] Loading song: ${songId}`, 'info');
-                    // Use absolute URL for module import
-                    const modulePath = `${baseUrl}strudel/songs/${songId}.js`;
-                    debugLog(`  → Module path: ${modulePath}`, 'info');
+                if (!manifest.songs || !Array.isArray(manifest.songs)) {
+                    throw new Error('Manifest does not export a songs array');
+                }
 
-                    const module = await import(modulePath);
-                    debugLog(`  → Import successful, checking exports...`, 'info');
+                debugLog(`Found ${manifest.songs.length} songs in manifest`, 'info');
 
-                    if (!module.song) {
-                        throw new Error(`Module ${songId} has no 'song' export`);
-                    }
-
-                    songs[songId] = module.song;
-                    debugLog(`  ✓ Successfully loaded: ${module.song.name}`, 'success');
+                for (const songData of manifest.songs) {
+                    songs[songData.id] = songData;
+                    debugLog(`  ✓ Loaded: ${songData.name}`, 'success');
 
                     const option = document.createElement('option');
-                    option.value = songId;
-                    option.textContent = module.song.name;
+                    option.value = songData.id;
+                    option.textContent = songData.name;
                     elements.songSelect.appendChild(option);
-                    loadedCount++;
-                } catch (error) {
-                    failedCount++;
-                    debugLog(`  ✗ Failed to load ${songId}: ${error.message}`, 'error');
-                    if (error.stack) {
-                        debugLog(`  Error stack: ${error.stack}`, 'error');
-                    }
+                }
+
+                debugLog(`━━━ Song loading complete ━━━`, 'info');
+                debugLog(`  Loaded: ${manifest.songs.length} songs`, 'success');
+                debugLog(`  Total options in dropdown: ${elements.songSelect.options.length}`, 'info');
+            } catch (error) {
+                debugLog(`✗ Failed to load manifest: ${error.message}`, 'error');
+                if (error.stack) {
+                    debugLog(`  Error stack: ${error.stack}`, 'error');
                 }
             }
-
-            debugLog(`━━━ Song loading complete ━━━`, 'info');
-            debugLog(`  Succeeded: ${loadedCount}`, loadedCount > 0 ? 'success' : 'error');
-            debugLog(`  Failed: ${failedCount}`, failedCount > 0 ? 'warning' : 'info');
-            debugLog(`  Total options in dropdown: ${elements.songSelect.options.length}`, 'info');
         }
 
         async function setupStrudel() {
