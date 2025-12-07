@@ -12,7 +12,7 @@ stack(
     [c5 d5 e5 f5] [g5 a5 b5 c6] [d6 c6 b5 a5] [g5 f5 e5 d5]
     [e5 f5 g5 a5] [b5 c6 d6 e6] [d6 c6 b5 a5] [g5 ~ ~ ~]
   \`)
-    .s("triangle")
+    .s("piano")
     .lpf(3500)
     .gain(0.35)
     .attack(0.005)
@@ -34,7 +34,7 @@ stack(
     [c5 ~ d5 ~] [e5 ~ f5 ~] [g5 ~ a5 ~] [b5 ~ ~ ~]
     [c6 ~ b5 ~] [a5 ~ g5 ~] [f5 ~ e5 ~] [d5 ~ ~ ~]
   \`)
-    .s("sine")
+    .s("piano")
     .lpf(3000)
     .gain(0.30)
     .attack(0.03)
@@ -58,7 +58,7 @@ stack(
     [c5 d5 e5 f5] [g5 a5 b5 c6] [b5 a5 g5 f5] [e5 d5 c5 b4]
     [a4 b4 c5 d5] [e5 f5 g5 a5] [g5 f5 e5 d5] [c5 ~ ~ ~]
   \`)
-    .s("triangle")
+    .s("piano")
     .lpf(3500)
     .gain(0.34)
     .attack(0.005)
@@ -85,7 +85,7 @@ stack(
     [f5 g5 ab5 bb5] [c6 d6 eb6 f6] [eb6 d6 c6 bb5] [ab5 g5 f5 eb5]
     [d5 eb5 f5 g5] [ab5 bb5 c6 d6] [c6 bb5 ab5 g5] [f5 ~ ~ ~]
   \`)
-    .s("triangle")
+    .s("piano")
     .lpf(3200)
     .gain(0.36)
     .attack(0.005)
@@ -114,7 +114,7 @@ stack(
     [c5 d5 e5 f5] [g5 a5 b5 c6] [d6 e6 f6 g6] [f6 e6 d6 c6]
     [b5 c6 d6 e6] [f6 e6 d6 c6] [b5 a5 g5 f5] [e5 ~ ~ ~]
   \`)
-    .s("triangle")
+    .s("piano")
     .lpf(4000)
     .gain(0.38)
     .attack(0.003)
@@ -145,7 +145,7 @@ stack(
     [g5 a5 b5 c6] [d6 e6 f6 g6] [e6 ~ c6 ~] [g5 ~ ~ ~]
     [c6 ~ e6 ~] [g6 ~ ~ ~] [c6 ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("triangle")
+    .s("piano")
     .lpf(4500)
     .gain(0.42)
     .attack(0.002)
@@ -176,7 +176,7 @@ stack(
     <[c3 g3] [e3 c4]> <[d3 a3] [f3 d4]> <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]>
     <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]>
   \`)
-    .s("sawtooth")
+    .s("piano")
     .lpf(1100)
     .gain(0.22)
     .attack(0.005)
@@ -207,7 +207,7 @@ stack(
     c2 d2 c2 c2
     c2 c2 c2 c2
   \`)
-    .s("sawtooth")
+    .s("piano")
     .lpf(700)
     .gain(0.28)
     .attack(0.005)
@@ -216,5 +216,5 @@ stack(
     .release(0.4)
     .room(0.35)
     .slow(6)
-).cpm(18)`
+).cpm(28)`
 };
