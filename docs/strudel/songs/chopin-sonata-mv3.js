@@ -155,26 +155,26 @@ stack(
     .room(0.6)
     .slow(6),
 
-  // Left hand - Rapid broken chords and octaves
+  // Left hand - Rapid broken chords tracking melody (Chopin Scherzo style)
   note(\`
-    <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]> <[d3 a3] [f3 d4]> <[e3 b3] [g3 e4]>
-    <[a2 e3] [c3 a3]> <[a2 e3] [c3 a3]> <[g2 d3] [b2 g3]> <[c3 g3] [e3 c4]>
-    <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]> <[d3 a3] [f3 d4]> <[e3 b3] [g3 e4]>
-    <[f3 c4] [a3 f4]> <[g3 d4] [b3 g4]> <[e3 b3] [g3 e4]> <[c3 g3] [e3 c4]>
-    <[c3 g3] [e3 c4]> <[d3 a3] [f3 d4]> <[e3 b3] [g3 e4]> <[c3 g3] [e3 c4]>
+    <[c3 g3] [e3 c4]> <[g2 d3] [b2 g3]> <[a2 e3] [c3 a3]> <[e3 b3] [g3 e4]>
+    <[a2 e3] [c3 a3]> <[f2 c3] [a2 f3]> <[g2 d3] [b2 g3]> <[c3 g3] [e3 c4]>
+    <[c3 g3] [e3 c4]> <[g2 d3] [b2 g3]> <[d3 a3] [f3 d4]> <[e3 b3] [g3 e4]>
+    <[f3 c4] [a3 f4]> <[g3 d4] [b3 g4]> <[e3 b3] [g3 e4]> <[g2 d3] [b2 g3]>
+    <[c3 g3] [e3 c4]> <[g2 d3] [b2 g3]> <[a2 e3] [c3 a3]> <[c3 g3] [e3 c4]>
     <[d3 a3] [f3 d4]> <[e3 b3] [g3 e4]> <[f3 c4] [a3 f4]> <[g3 d4] [b3 g4]>
-    <[a2 e3] [c3 a3]> <[b2 f3] [d3 b3]> <[c3 g3] [e3 c4]> <[d3 a3] [f3 d4]>
-    <[g2 d3] [b2 g3]> <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]>
-    <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]> <[d3 a3] [f3 d4]> <[e3 b3] [g3 e4]>
-    <[a2 e3] [c3 a3]> <[a2 e3] [c3 a3]> <[g2 d3] [b2 g3]> <[c3 g3] [e3 c4]>
-    <[eb3 bb3] [g3 eb4]> <[eb3 bb3] [g3 eb4]> <[f3 c4] [ab3 f4]> <[g3 d4] [bb3 g4]>
-    <[c3 g3] [eb3 c4]> <[c3 g3] [eb3 c4]> <[bb2 f3] [d3 bb3]> <[eb3 bb3] [g3 eb4]>
-    <[f3 c4] [ab3 f4]> <[f3 c4] [ab3 f4]> <[g3 d4] [bb3 g4]> <[ab3 eb4] [c4 ab4]>
-    <[bb2 f3] [d3 bb3]> <[c3 g3] [eb3 c4]> <[d3 a3] [f3 d4]> <[eb3 bb3] [g3 eb4]>
-    <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]> <[d3 a3] [f3 d4]> <[e3 b3] [g3 e4]>
+    <[a2 e3] [c3 a3]> <[g2 d3] [b2 g3]> <[c3 g3] [e3 c4]> <[d3 a3] [f3 d4]>
+    <[g2 d3] [b2 g3]> <[c3 g3] [e3 c4]> <[g2 d3] [b2 g3]> <[c3 g3] [e3 c4]>
+    <[c3 g3] [e3 c4]> <[g2 d3] [b2 g3]> <[a2 e3] [c3 a3]> <[e3 b3] [g3 e4]>
+    <[a2 e3] [c3 a3]> <[f2 c3] [a2 f3]> <[g2 d3] [b2 g3]> <[c3 g3] [e3 c4]>
+    <[eb3 bb3] [g3 eb4]> <[bb2 f3] [d3 bb3]> <[c3 g3] [eb3 c4]> <[g3 d4] [bb3 g4]>
+    <[c3 g3] [eb3 c4]> <[ab2 eb3] [c3 ab3]> <[bb2 f3] [d3 bb3]> <[eb3 bb3] [g3 eb4]>
+    <[f3 c4] [ab3 f4]> <[c3 g3] [eb3 c4]> <[g3 d4] [bb3 g4]> <[ab3 eb4] [c4 ab4]>
+    <[bb2 f3] [d3 bb3]> <[eb3 bb3] [g3 eb4]> <[d3 a3] [f3 d4]> <[eb3 bb3] [g3 eb4]>
+    <[c3 g3] [e3 c4]> <[g2 d3] [b2 g3]> <[a2 e3] [c3 a3]> <[e3 b3] [g3 e4]>
     <[f3 c4] [a3 f4]> <[g3 d4] [b3 g4]> <[e3 b3] [g3 e4]> <[c3 g3] [e3 c4]>
-    <[c3 g3] [e3 c4]> <[d3 a3] [f3 d4]> <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]>
-    <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]>
+    <[c3 g3] [e3 c4]> <[g2 d3] [b2 g3]> <[c3 g3] [e3 c4]> <[g2 d3] [b2 g3]>
+    <[c3 g3] [e3 c4]> <[e3 b3] [g3 e4]> <[c3 g3] [e3 c4]> <[c3 g3] [e3 c4]>
   \`)
     .s("kawai")
     .lpf(1100)
@@ -186,26 +186,26 @@ stack(
     .room(0.4)
     .slow(6),
 
-  // Bass octaves
+  // Bass octaves - Beethovenian harmonic foundation
   note(\`
-    c2 c2 d2 e2
-    a1 a1 g1 c2
-    c2 c2 d2 e2
-    f2 g2 e2 c2
-    c2 d2 e2 c2
+    c2 g1 a1 e2
+    a1 f1 g1 c2
+    c2 g1 d2 e2
+    f2 g2 e2 g1
+    c2 g1 a1 c2
     d2 e2 f2 g2
-    a1 b1 c2 d2
-    g1 c2 c2 c2
-    c2 c2 d2 e2
-    a1 a1 g1 c2
-    eb2 eb2 f2 g2
-    c2 c2 bb1 eb2
-    f2 f2 g2 ab2
-    bb1 c2 d2 eb2
-    c2 c2 d2 e2
+    a1 g1 c2 d2
+    g1 c2 g1 c2
+    c2 g1 a1 e2
+    a1 f1 g1 c2
+    eb2 bb1 c2 g2
+    c2 ab1 bb1 eb2
+    f2 c2 g2 ab2
+    bb1 eb2 d2 eb2
+    c2 g1 a1 e2
     f2 g2 e2 c2
-    c2 d2 c2 c2
-    c2 c2 c2 c2
+    c2 g1 c2 g1
+    c2 e2 c2 c2
   \`)
     .s("kawai")
     .lpf(700)

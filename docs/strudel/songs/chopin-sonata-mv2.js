@@ -93,27 +93,27 @@ stack(
     .delaytime(0.6)
     .slow(12),
 
-  // Left hand - Flowing arpeggios (Chopin's characteristic nocturne accompaniment)
+  // Left hand - Flowing arpeggios following melody (Chopin Op.9 No.2 style)
   note(\`
-    <c3 [e3 g3] [c4 g3] [e3 c3]> <c3 [e3 g3] [c4 g3] [e3 c3]>
-    <a2 [c3 e3] [a3 e3] [c3 a2]> <a2 [c3 e3] [a3 e3] [c3 a2]>
-    <f2 [a2 c3] [f3 c3] [a2 f2]> <g2 [b2 d3] [g3 d3] [b2 g2]>
-    <c3 [e3 g3] [c4 g3] [e3 c3]> <c3 [e3 g3] [c4 g3] [e3 c3]>
-    <d3 [f3 a3] [d4 a3] [f3 d3]> <e3 [g3 b3] [e4 b3] [g3 e3]>
-    <a2 [c3 e3] [a3 e3] [c3 a2]> <b2 [d3 g3] [b3 g3] [d3 b2]>
-    <c3 [e3 g3] [c4 g3] [e3 c3]> <d3 [f3 a3] [d4 a3] [f3 d3]>
+    <g2 [b2 d3] [g3 d3] [b2 g2]> <a2 [c3 e3] [a3 e3] [c3 a2]>
+    <c3 [e3 g3] [c4 g3] [e3 c3]> <g2 [b2 d3] [g3 d3] [b2 g2]>
+    <e2 [g2 b2] [e3 b2] [g2 e2]> <d3 [f3 a3] [d4 a3] [f3 d3]>
+    <c3 [e3 g3] [c4 g3] [e3 c3]> <b2 [d3 g3] [b3 g3] [d3 b2]>
+    <a2 [c3 e3] [a3 e3] [c3 a2]> <d3 [f3 a3] [d4 a3] [f3 d3]>
+    <e3 [g3 b3] [e4 b3] [g3 e3]> <a2 [c3 e3] [a3 e3] [c3 a2]>
     <g2 [b2 d3] [g3 d3] [b2 g2]> <c3 [e3 g3] [c4 g3] [e3 c3]>
-    <ab2 [c3 eb3] [ab3 eb3] [c3 ab2]> <ab2 [c3 eb3] [ab3 eb3] [c3 ab2]>
-    <f2 [ab2 c3] [f3 c3] [ab2 f2]> <g2 [bb2 eb3] [g3 eb3] [bb2 g2]>
-    <ab2 [c3 eb3] [ab3 eb3] [c3 ab2]> <bb2 [d3 f3] [bb3 f3] [d3 bb2]>
+    <d3 [f3 a3] [d4 a3] [f3 d3]> <g2 [b2 d3] [g3 d3] [b2 g2]>
     <eb3 [g3 bb3] [eb4 bb3] [g3 eb3]> <ab2 [c3 eb3] [ab3 eb3] [c3 ab2]>
-    <bb2 [d3 f3] [bb3 f3] [d3 bb2]> <c3 [eb3 g3] [c4 g3] [eb3 c3]>
+    <f2 [ab2 c3] [f3 c3] [ab2 f2]> <bb2 [d3 f3] [bb3 f3] [d3 bb2]>
+    <eb3 [g3 bb3] [eb4 bb3] [g3 eb3]> <ab2 [c3 eb3] [ab3 eb3] [c3 ab2]>
+    <g2 [bb2 eb3] [g3 eb3] [bb2 g2]> <c3 [eb3 g3] [c4 g3] [eb3 c3]>
+    <bb2 [d3 f3] [bb3 f3] [d3 bb2]> <eb3 [g3 bb3] [eb4 bb3] [g3 eb3]>
     <ab2 [c3 eb3] [ab3 eb3] [c3 ab2]> <bb2 [d3 f3] [bb3 f3] [d3 bb2]>
-    <eb3 [g3 bb3] [eb4 bb3] [g3 eb3]> <eb3 [g3 bb3] [eb4 bb3] [g3 eb3]>
+    <eb3 [g3 bb3] [eb4 bb3] [g3 eb3]> <bb2 [d3 f3] [bb3 f3] [d3 bb2]>
     <g2 [b2 d3] [g3 d3] [b2 g2]> <g2 [b2 d3] [g3 d3] [b2 g2]>
-    <c3 [e3 g3] [c4 g3] [e3 c3]> <c3 [e3 g3] [c4 g3] [e3 c3]>
+    <c3 [e3 g3] [c4 g3] [e3 c3]> <g2 [b2 d3] [g3 d3] [b2 g2]>
     <a2 [c3 e3] [a3 e3] [c3 a2]> <b2 [d3 g3] [b3 g3] [d3 b2]>
-    <c3 [e3 g3] [c4 g3] [e3 c3]> <d3 [f3 a3] [d4 a3] [f3 d3]>
+    <c3 [e3 g3] [c4 g3] [e3 c3]> <g2 [b2 d3] [g3 d3] [b2 g2]>
     <c3 [e3 g3] [c4 g3] [e3 c3]> <c3 [e3 g3] [c4 g3] [e3 c3]>
   \`)
     .s("kawai")
@@ -126,26 +126,27 @@ stack(
     .room(0.7)
     .slow(12),
 
-  // Deep bass pedal tones
+  // Deep bass pedal tones - supporting harmonic rhythm
   note(\`
-    c2 ~ a1 ~
-    f1 ~ g1 ~
-    c2 ~ c2 ~
-    d2 ~ e2 ~
-    a1 ~ b1 ~
-    c2 ~ d2 ~
+    g1 ~ a1 ~
+    c2 ~ g1 ~
+    e1 ~ d2 ~
+    c2 ~ b1 ~
+    a1 ~ d2 ~
+    e2 ~ a1 ~
     g1 ~ c2 ~
-    ab1 ~ ab1 ~
-    f1 ~ g1 ~
-    ab1 ~ bb1 ~
+    d2 ~ g1 ~
     eb2 ~ ab1 ~
-    bb1 ~ c2 ~
+    f1 ~ bb1 ~
+    eb2 ~ ab1 ~
+    g1 ~ c2 ~
+    bb1 ~ eb2 ~
     ab1 ~ bb1 ~
-    eb2 ~ eb2 ~
+    eb2 ~ bb1 ~
     g1 ~ g1 ~
-    c2 ~ c2 ~
+    c2 ~ g1 ~
     a1 ~ b1 ~
-    c2 ~ d2 ~
+    c2 ~ g1 ~
     c2 ~ c2 ~
   \`)
     .s("kawai")
