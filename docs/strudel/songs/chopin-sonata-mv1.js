@@ -13,7 +13,7 @@ stack(
     [g5 f5 e5 d5] [c5 b4 a4 g4] [a4 ~ b4 ~] [c5 ~ ~ ~]
     [d5 c5 b4 a4] [g4 f4 e4 d4] [e4 ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("piano")
+    .s("kawai")
     .lpf(2500)
     .gain(0.35)
     .attack(0.01)
@@ -35,7 +35,7 @@ stack(
     [a4 b4 c5 d5] [e5 f5 g5 a5] [b5 a5 g5 f5] [e5 d5 c5 b4]
     [c5 ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("piano")
+    .s("kawai")
     .lpf(3000)
     .gain(0.3)
     .attack(0.05)
@@ -61,7 +61,7 @@ stack(
     [eb5 d5 c5 bb4] [a4 g4 f4 eb4] [d4 eb4 f4 g4] [a4 bb4 c5 d5]
     [eb5 ~ ~ ~] [d5 c5 bb4 a4] [g4 ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("piano")
+    .s("kawai")
     .lpf(2200)
     .gain(0.32)
     .attack(0.02)
@@ -89,7 +89,7 @@ stack(
     [e5 f5 g5 a5] [b5 c6 d6 e6] [c6 ~ ~ ~] [b5 a5 g5 f5]
     [e5 d5 c5 b4] [c5 ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("piano")
+    .s("kawai")
     .lpf(2800)
     .gain(0.38)
     .attack(0.01)
@@ -117,7 +117,7 @@ stack(
     <c3 e3 g3 e3> <d3 f3 a3 f3> <e3 g3 c4 g3> <e3 g3 b3 g3>
     <c3 e3 g3 e3> <c3 e3 g3 e3> <c3 e3 g3 e3> <c3 e3 g3 e3>
   \`)
-    .s("piano")
+    .s("kawai")
     .lpf(900)
     .gain(0.22)
     .attack(0.01)
@@ -145,7 +145,7 @@ stack(
     c2 d2 e2 e2
     c2 c2 c2 c2
   \`)
-    .s("piano")
+    .s("kawai")
     .lpf(600)
     .gain(0.28)
     .attack(0.01)
