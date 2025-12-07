@@ -475,21 +475,74 @@
             }
         }
 
+        // Track which sample libraries have been loaded
+        const loadedLibraries = new Set();
+
+        // Map of sample names to their library sources
+        const sampleLibraries = {
+            // VCSL samples (piano, etc.)
+            'kawai': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'steinway': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'piano1': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'clavisynth': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'fmpiano': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+
+            // Dirt samples (drums, etc.)
+            'bd': { lib: 'dirt', url: 'github:tidalcycles/dirt-samples' },
+            'hh': { lib: 'dirt', url: 'github:tidalcycles/dirt-samples' },
+            'sd': { lib: 'dirt', url: 'github:tidalcycles/dirt-samples' },
+            'cp': { lib: 'dirt', url: 'github:tidalcycles/dirt-samples' },
+        };
+
+        async function detectAndLoadSamples(code) {
+            // Extract all .s("...") calls from the code
+            const sampleRegex = /\.s\(["']([^"']+)["']\)/g;
+            const matches = [...code.matchAll(sampleRegex)];
+            const usedSamples = [...new Set(matches.map(m => m[1]))];
+
+            debugLog(`Detected samples in code: ${usedSamples.join(', ')}`, 'info');
+
+            // Determine which libraries need to be loaded
+            const librariesToLoad = new Map();
+            for (const sample of usedSamples) {
+                if (sampleLibraries[sample]) {
+                    const { lib, url } = sampleLibraries[sample];
+                    if (!loadedLibraries.has(lib)) {
+                        librariesToLoad.set(lib, url);
+                    }
+                }
+            }
+
+            // Load the required libraries
+            if (librariesToLoad.size > 0) {
+                debugLog(`Loading ${librariesToLoad.size} sample libraries...`, 'info');
+                const urls = [...librariesToLoad.values()];
+
+                for (const [lib, url] of librariesToLoad) {
+                    debugLog(`  Loading ${lib} from ${url}`, 'info');
+                }
+
+                await samples(...urls);
+
+                // Mark libraries as loaded
+                for (const lib of librariesToLoad.keys()) {
+                    loadedLibraries.add(lib);
+                    debugLog(`✓ ${lib} library loaded`, 'success');
+                }
+            } else {
+                debugLog('All required samples already loaded', 'info');
+            }
+        }
+
         async function setupStrudel() {
             try {
                 debugLog('Initializing Strudel (using recommended @strudel/web approach)...', 'info');
 
-                // Use the official initStrudel() function from @strudel/web
-                // IMPORTANT: Load the dirt-samples so sound("bd"), sound("hh"), etc. work
-                // Without this, patterns using samples will play silently!
-                await initStrudel({
-                    prebake: () => {
-                        debugLog('Loading dirt-samples from GitHub...', 'info');
-                        return samples('github:tidalcycles/dirt-samples');
-                    }
-                });
+                // Initialize Strudel without prebaked samples
+                // We'll load samples dynamically based on what each song needs
+                await initStrudel();
 
-                debugLog('✓ Strudel initialized with samples loaded', 'success');
+                debugLog('✓ Strudel initialized (samples will load on-demand)', 'success');
                 currentRepl = {
                     initialized: true
                 };
@@ -554,6 +607,10 @@
                 const code = songs[songId].code;
                 debugLog(`Playing pattern for ${songId}`, 'info');
                 debugLog(`Code: ${code.substring(0, 100)}...`, 'info');
+
+                // Detect and load required samples before playing
+                updateStatus('Loading samples...', false);
+                await detectAndLoadSamples(code);
 
                 // Evaluate the code to get the pattern, then call .play() on it
                 const pattern = eval(code);
