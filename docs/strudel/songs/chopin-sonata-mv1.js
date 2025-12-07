@@ -99,23 +99,23 @@ stack(
     .room(0.7)
     .slow(8),
 
-  // Left hand - Alberti bass and broken chords (Chopin-style accompaniment)
+  // Left hand - Alberti bass following melody harmony (Chopin Op.9 style voice leading)
   note(\`
-    <c3 e3 g3 e3> <c3 e3 g3 e3> <f3 a3 c4 a3> <g3 b3 d4 b3>
-    <c3 e3 g3 e3> <a2 c3 e3 c3> <d3 f3 a3 f3> <g2 b2 d3 b2>
-    <e3 g3 b3 g3> <c3 e3 g3 e3> <f3 a3 c4 a3> <c3 e3 g3 e3>
-    <g2 b2 d3 b2> <g2 b2 d3 b2> <c3 e3 g3 e3> <c3 e3 g3 e3>
+    <c3 e3 g3 e3> <g2 b2 d3 b2> <a2 c3 e3 c3> <g2 b2 d3 b2>
+    <a2 c3 e3 c3> <f2 a2 c3 a2> <d3 f3 a3 f3> <g2 b2 d3 b2>
+    <c3 e3 g3 e3> <a2 c3 e3 c3> <f2 a2 c3 a2> <c3 e3 g3 e3>
+    <g2 b2 d3 b2> <g2 b2 f3 b2> <c3 e3 g3 e3> <c3 e3 g3 e3>
+    <c3 e3 g3 e3> <g2 b2 d3 b2> <a2 c3 e3 c3> <e3 g3 b3 g3>
+    <f2 a2 c3 a2> <g2 b2 d3 b2> <c3 e3 g3 e3> <c3 e3 g3 e3>
+    <a2 c3 e3 c3> <d3 f3 a3 f3> <e3 g3 b3 g3> <g2 b2 d3 b2>
+    <c3 e3 g3 e3> <c3 e3 g3 e3> <c3 e3 g3 e3> <c3 e3 g3 e3>
+    <f3 a3 c4 a3> <d3 f3 a3 f3> <bb2 d3 f3 d3> <c3 e3 g3 e3>
+    <f3 a3 c4 a3> <g3 b3 d4 b3> <a2 c3 e3 c3> <g2 b2 d3 b2>
+    <eb3 g3 bb3 g3> <c3 eb3 g3 eb3> <ab2 c3 eb3 c3> <bb2 d3 f3 d3>
+    <eb3 g3 bb3 g3> <bb2 d3 f3 d3> <g2 bb2 d3 bb2> <g2 bb2 d3 bb2>
+    <c3 e3 g3 e3> <g2 b2 d3 b2> <a2 c3 e3 c3> <g2 b2 d3 b2>
     <c3 e3 g3 e3> <d3 f3 a3 f3> <e3 g3 b3 g3> <e3 g3 b3 g3>
-    <a2 c3 e3 c3> <b2 d3 g3 d3> <c3 e3 g3 e3> <c3 e3 g3 e3>
-    <f2 a2 c3 a2> <g2 b2 d3 b2> <a2 c3 e3 c3> <b2 d3 f3 d3>
-    <c3 e3 g3 e3> <c3 e3 g3 e3> <c3 e3 g3 e3> <c3 e3 g3 e3>
-    <f3 a3 c4 a3> <f3 a3 c4 a3> <bb2 d3 f3 d3> <bb2 d3 f3 d3>
-    <c3 e3 g3 e3> <c3 e3 g3 e3> <f3 a3 c4 a3> <g3 b3 d4 b3>
-    <eb3 g3 bb3 g3> <eb3 g3 bb3 g3> <ab2 c3 eb3 c3> <bb2 d3 f3 d3>
-    <eb3 g3 bb3 g3> <d3 f3 bb3 f3> <g3 bb3 d4 bb3> <g3 bb3 d4 bb3>
-    <c3 e3 g3 e3> <c3 e3 g3 e3> <f3 a3 c4 a3> <g3 b3 d4 b3>
-    <c3 e3 g3 e3> <d3 f3 a3 f3> <e3 g3 c4 g3> <e3 g3 b3 g3>
-    <c3 e3 g3 e3> <c3 e3 g3 e3> <c3 e3 g3 e3> <c3 e3 g3 e3>
+    <c3 e3 g3 e3> <g2 b2 d3 b2> <c3 e3 g3 e3> <c3 e3 g3 e3>
   \`)
     .s("kawai")
     .lpf(900)
@@ -127,23 +127,23 @@ stack(
     .room(0.5)
     .slow(8),
 
-  // Bass line foundation
+  // Bass line foundation - Beethovenian voice leading
   note(\`
-    c2 c2 f2 g2
-    c2 a1 d2 g1
-    e2 c2 f2 c2
+    c2 g1 a1 g1
+    a1 f1 d2 g1
+    c2 a1 f1 c2
     g1 g1 c2 c2
-    c2 d2 e2 e2
-    a1 b1 c2 c2
-    f1 g1 a1 b1
+    c2 g1 a1 e2
+    f1 g1 c2 c2
+    a1 d2 e2 g1
     c2 c2 c2 c2
-    f2 f2 bb1 bb1
-    c2 c2 f2 g2
-    eb2 eb2 ab1 bb1
-    eb2 d2 g2 g2
-    c2 c2 f2 g2
+    f2 d2 bb1 c2
+    f2 g2 a1 g1
+    eb2 c2 ab1 bb1
+    eb2 bb1 g1 g1
+    c2 g1 a1 g1
     c2 d2 e2 e2
-    c2 c2 c2 c2
+    c2 g1 c2 c2
   \`)
     .s("kawai")
     .lpf(600)
