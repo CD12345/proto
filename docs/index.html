@@ -481,11 +481,14 @@
 
                 // Use the official initStrudel() function from @strudel/web
                 // IMPORTANT: Load the dirt-samples so sound("bd"), sound("hh"), etc. work
+                // ALSO load VCSL samples for piano sounds (kawai, steinway, etc.)
                 // Without this, patterns using samples will play silently!
                 await initStrudel({
                     prebake: () => {
                         debugLog('Loading dirt-samples from GitHub...', 'info');
-                        return samples('github:tidalcycles/dirt-samples');
+                        debugLog('Loading VCSL samples (piano, etc.) from GitHub...', 'info');
+                        const ds = "https://raw.githubusercontent.com/felixroos/dough-samples/main/";
+                        return samples('github:tidalcycles/dirt-samples', `${ds}vcsl.json`);
                     }
                 });
 
