@@ -7,7 +7,7 @@ export const song = {
 // Features: Syncopated guitar rhythm, smooth melody, jazz harmonies, gentle groove
 
 stack(
-  // MELODY - Smooth, floating bossa line
+  // MELODY - Smooth, floating bossa line (flute)
   note(\`
     [~ ~ ~ ~] [~ ~ a4 bb4] [c5 ~ d5 ~] [c5 ~ bb4 ~]
     [a4 ~ g4 ~] [f4 ~ ~ ~] [~ ~ a4 bb4] [c5 ~ d5 ~]
@@ -22,9 +22,8 @@ stack(
     [~ ~ a4 bb4] [c5 ~ d5 ~] [c5 ~ bb4 ~] [a4 ~ g4 ~]
     [f4 ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("triangle")
-    .lpf(3000)
-    .gain(0.3)
+    .s("gm_flute")
+    .gain(0.38)
     .attack(0.03)
     .decay(0.2)
     .sustain(0.5)
@@ -33,7 +32,7 @@ stack(
     .delay(0.15)
     .slow(12),
 
-  // BOSSA GUITAR - Classic syncopated pattern
+  // BOSSA GUITAR - Classic syncopated pattern (nylon guitar)
   note(\`
     [<f3 a3 c4> ~ <f3 a3 c4> ~] [~ <f3 a3 c4> ~ <f3 a3 c4>]
     [<g3 bb3 d4> ~ <g3 bb3 d4> ~] [~ <g3 bb3 d4> ~ <g3 bb3 d4>]
@@ -52,9 +51,8 @@ stack(
     [<bb2 d3 f3> ~ <bb2 d3 f3> ~] [~ <c3 e3 g3 bb3> ~ <c3 e3 g3 bb3>]
     [<f3 a3 c4> ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("triangle")
-    .lpf(2200)
-    .gain(0.2)
+    .s("gm_acoustic_guitar_nylon")
+    .gain(0.28)
     .attack(0.01)
     .decay(0.1)
     .sustain(0.4)
@@ -62,7 +60,7 @@ stack(
     .room(0.4)
     .slow(12),
 
-  // BASS - Bossa bass pattern
+  // BASS - Bossa bass pattern (acoustic bass)
   note(\`
     [f2 ~ ~ c2] [~ f2 ~ ~] [g2 ~ ~ d2] [~ g2 ~ ~]
     [c2 ~ ~ g1] [~ c2 ~ ~] [f2 ~ ~ c2] [~ f2 ~ ~]
@@ -73,9 +71,8 @@ stack(
     [c2 ~ ~ g1] [~ c2 ~ ~] [f2 ~ ~ c2] [~ f2 ~ ~]
     [bb1 ~ ~ ~] [c2 ~ ~ ~] [f2 ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("sawtooth")
-    .lpf(500)
-    .gain(0.35)
+    .s("gm_acoustic_bass")
+    .gain(0.42)
     .attack(0.01)
     .decay(0.12)
     .sustain(0.5)
@@ -100,7 +97,7 @@ stack(
     .gain(0.35)
     .slow(1),
 
-  // PIANO FILLS - Occasional jazz voicings
+  // PIANO FILLS - Occasional jazz voicings (electric piano)
   note(\`
     [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
     [~ ~ ~ ~] [~ ~ ~ ~] [<c4 e4 g4 bb4>@3 ~] [~ ~ ~ ~]
@@ -111,9 +108,8 @@ stack(
     [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
     [~ ~ ~ ~] [~ ~ ~ ~] [<f4 a4 c5>@3 ~] [~ ~ ~ ~]
   \`)
-    .s("sine")
-    .lpf(2500)
-    .gain(0.14)
+    .s("gm_electric_piano")
+    .gain(0.2)
     .attack(0.02)
     .decay(0.2)
     .sustain(0.4)
