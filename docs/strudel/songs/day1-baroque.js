@@ -18,9 +18,8 @@ stack(
     [g5 ~ f5 e5] [d5 ~ c#5 ~] [d5 e5 f5 g5] [a5 ~ ~ ~]
     [bb5 a5 g5 f5] [e5 d5 c#5 d5] [e5 ~ d5 ~] [d5 ~ ~ ~]
   \`)
-    .s("triangle")
-    .lpf(3200)
-    .gain(0.32)
+    .s("gm_violin")
+    .gain(0.38)
     .attack(0.01)
     .decay(0.2)
     .sustain(0.5)
@@ -39,9 +38,8 @@ stack(
     [e4 ~ d4 c4] [bb3 ~ a3 ~] [bb3 c4 d4 e4] [f4 ~ ~ ~]
     [g4 f4 e4 d4] [c#4 d4 e4 f4] [c#4 ~ d4 ~] [d4 ~ ~ ~]
   \`)
-    .s("triangle")
-    .lpf(2400)
-    .gain(0.26)
+    .s("gm_violin")
+    .gain(0.32)
     .attack(0.01)
     .decay(0.2)
     .sustain(0.4)
@@ -60,9 +58,8 @@ stack(
     [bb3 ~ a3 g3] [f3 ~ e3 ~] [f3 g3 a3 bb3] [c4 ~ ~ ~]
     [d4 c4 bb3 a3] [g3 f3 e3 f3] [g3 ~ f3 ~] [f3 ~ ~ ~]
   \`)
-    .s("triangle")
-    .lpf(1800)
-    .gain(0.22)
+    .s("gm_viola")
+    .gain(0.28)
     .attack(0.01)
     .decay(0.15)
     .sustain(0.4)
@@ -81,9 +78,8 @@ stack(
     g2 g2 a2 a2 bb2 bb2 f2 f2
     g2 g2 a2 a2 d2 d2 d2 d2
   \`)
-    .s("sawtooth")
-    .lpf(500)
-    .gain(0.32)
+    .s("gm_cello")
+    .gain(0.38)
     .attack(0.01)
     .decay(0.15)
     .sustain(0.5)
@@ -91,7 +87,7 @@ stack(
     .room(0.35)
     .slow(8),
 
-  // CONTINUO - Harpsichord-like chords on strong beats
+  // CONTINUO - Harpsichord chords on strong beats
   note(\`
     <d3 f3 a3> ~ <g3 bb3 d4> ~
     <c3 e3 g3> ~ <a3 c#4 e4> ~
@@ -110,9 +106,8 @@ stack(
     <g2 bb2 d3> ~ <a2 c#3 e3> ~
     <d3 f3 a3> ~ ~ ~
   \`)
-    .s("square")
-    .lpf(1600)
-    .gain(0.15)
+    .s("gm_harpsichord")
+    .gain(0.22)
     .attack(0.005)
     .decay(0.1)
     .sustain(0.2)

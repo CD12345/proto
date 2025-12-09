@@ -7,7 +7,7 @@ export const song = {
 // Features: Four-on-floor, funky bass, string stabs, brass hits
 
 stack(
-  // LEAD MELODY - Funky, danceable hook
+  // LEAD MELODY - Funky, danceable hook (synth lead)
   note(\`
     [~ ~ ~ ~] [~ ~ ~ ~] [c5 ~ d5 eb5] [g5 ~ f5 ~]
     [eb5 ~ d5 ~] [c5 ~ ~ ~] [bb4 ~ c5 d5] [eb5 ~ ~ ~]
@@ -22,9 +22,8 @@ stack(
     [c5 ~ d5 eb5] [g5 ~ f5 ~] [eb5 ~ d5 ~] [c5 ~ ~ ~]
     [c5 ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("sawtooth")
-    .lpf(3500)
-    .gain(0.28)
+    .s("gm_synth_lead_1")
+    .gain(0.35)
     .attack(0.02)
     .decay(0.12)
     .sustain(0.4)
@@ -32,7 +31,7 @@ stack(
     .room(0.45)
     .slow(12),
 
-  // STRING STABS - Disco string section
+  // STRING STABS - Disco string section (synth strings)
   note(\`
     <c4 eb4 g4> ~ ~ ~ <c4 eb4 g4> ~ ~ ~
     <bb3 d4 f4> ~ ~ ~ <bb3 d4 f4> ~ ~ ~
@@ -47,9 +46,8 @@ stack(
     <c4 eb4 g4> ~ ~ ~ <c4 eb4 g4> ~ ~ ~
     <c4 eb4 g4> ~ ~ ~ ~ ~ ~ ~
   \`)
-    .s("sawtooth")
-    .lpf(2400)
-    .gain(0.2)
+    .s("gm_synth_strings_1")
+    .gain(0.28)
     .attack(0.01)
     .decay(0.15)
     .sustain(0.4)
@@ -57,7 +55,7 @@ stack(
     .room(0.4)
     .slow(12),
 
-  // BRASS HITS - Funky horn section
+  // BRASS HITS - Funky horn section (trumpet)
   note(\`
     [~ ~ ~ ~] [<c5 eb5 g5> ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
     [~ ~ ~ ~] [<bb4 d5 f5> ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
@@ -72,9 +70,8 @@ stack(
     [<c5 eb5 g5> ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
     [<c5 eb5 g5> ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("square")
-    .lpf(2000)
-    .gain(0.18)
+    .s("gm_trumpet")
+    .gain(0.25)
     .attack(0.01)
     .decay(0.1)
     .sustain(0.3)
@@ -82,7 +79,7 @@ stack(
     .room(0.35)
     .slow(12),
 
-  // BASS - Funky disco octave bass
+  // BASS - Funky disco octave bass (synth bass)
   note(\`
     [c2 c2 c3 c2] [c2 c3 c2 c2] [bb1 bb1 bb2 bb1] [bb1 bb2 bb1 bb1]
     [ab1 ab1 ab2 ab1] [ab1 ab2 ab1 ab1] [g1 g1 g2 g1] [g1 g2 g1 g1]
@@ -97,9 +94,8 @@ stack(
     [c2 c2 c3 c2] [c2 c3 c2 c2] [c2 c2 c3 c2] [c2 c3 c2 c2]
     [c2 c3 c2 c3] [c2 ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("sawtooth")
-    .lpf(550)
-    .gain(0.42)
+    .s("gm_synth_bass_1")
+    .gain(0.5)
     .attack(0.01)
     .decay(0.08)
     .sustain(0.5)
@@ -107,31 +103,36 @@ stack(
     .room(0.25)
     .slow(12),
 
-  // KICK - Four on the floor disco beat
+  // KICK - Four on the floor disco beat (TR-909)
   s("bd bd bd bd")
+    .bank("RolandTR909")
     .gain(0.75)
     .slow(1),
 
   // SNARE - Punchy backbeat
   s("~ sd ~ sd")
+    .bank("RolandTR909")
     .gain(0.6)
     .room(0.35)
     .slow(1),
 
   // HI-HAT - Disco open hat pattern
   s("[hh hh oh hh] [hh hh oh hh]")
+    .bank("RolandTR909")
     .gain(0.35)
     .lpf(8000)
     .slow(1),
 
   // CLAPS - Extra energy
   s("~ cp ~ cp")
+    .bank("RolandTR909")
     .gain(0.35)
     .room(0.4)
     .slow(1),
 
   // CONGA - Disco percussion
   s("[~ bd ~ ~] [bd ~ ~ bd]")
+    .bank("RolandTR727")
     .gain(0.25)
     .lpf(2000)
     .slow(1)
