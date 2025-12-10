@@ -487,11 +487,32 @@
             'clavisynth': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
             'fmpiano': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
 
+            // General MIDI instruments from VCSL
+            'gm_violin': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_viola': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_cello': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_contrabass': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_harpsichord': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_piano': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_electric_piano': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_organ': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_acoustic_guitar_nylon': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_acoustic_guitar_steel': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_acoustic_bass': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_electric_bass_finger': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_trumpet': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_french_horn': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_flute': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_synth_strings_1': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_synth_lead_1': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+            'gm_synth_bass_1': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
+
             // Dirt samples (drums, etc.)
             'bd': { lib: 'dirt', url: 'github:tidalcycles/dirt-samples' },
             'hh': { lib: 'dirt', url: 'github:tidalcycles/dirt-samples' },
             'sd': { lib: 'dirt', url: 'github:tidalcycles/dirt-samples' },
             'cp': { lib: 'dirt', url: 'github:tidalcycles/dirt-samples' },
+            'oh': { lib: 'dirt', url: 'github:tidalcycles/dirt-samples' },
         };
 
         async function detectAndLoadSamples(code) {
@@ -500,7 +521,31 @@
             const matches = [...code.matchAll(sampleRegex)];
             const usedSamples = [...new Set(matches.map(m => m[1]))];
 
-            debugLog(`Detected samples in code: ${usedSamples.join(', ')}`, 'info');
+            debugLog(`Detected ${usedSamples.length} unique samples in code: ${usedSamples.join(', ')}`, 'info');
+
+            // Check for samples not in the mapping
+            const unmappedSamples = [];
+            const recognizedSamples = [];
+
+            for (const sample of usedSamples) {
+                if (sampleLibraries[sample]) {
+                    recognizedSamples.push(sample);
+                } else {
+                    unmappedSamples.push(sample);
+                }
+            }
+
+            // Log unmapped samples as warnings
+            if (unmappedSamples.length > 0) {
+                debugLog(`⚠ WARNING: ${unmappedSamples.length} samples not found in library mapping:`, 'warning');
+                for (const sample of unmappedSamples) {
+                    debugLog(`  ✗ "${sample}" - This sample will not load! Check if it's a valid sample name.`, 'error');
+                }
+            }
+
+            if (recognizedSamples.length > 0) {
+                debugLog(`✓ Recognized ${recognizedSamples.length} samples: ${recognizedSamples.join(', ')}`, 'success');
+            }
 
             // Determine which libraries need to be loaded
             const librariesToLoad = new Map();
@@ -522,15 +567,26 @@
                     debugLog(`  Loading ${lib} from ${url}`, 'info');
                 }
 
-                await samples(...urls);
+                try {
+                    await samples(...urls);
 
-                // Mark libraries as loaded
-                for (const lib of librariesToLoad.keys()) {
-                    loadedLibraries.add(lib);
-                    debugLog(`✓ ${lib} library loaded`, 'success');
+                    // Mark libraries as loaded
+                    for (const lib of librariesToLoad.keys()) {
+                        loadedLibraries.add(lib);
+                        debugLog(`✓ ${lib} library loaded successfully`, 'success');
+                    }
+                } catch (error) {
+                    debugLog(`✗ ERROR loading sample libraries: ${error.message}`, 'error');
+                    debugLog(`  This may cause samples to not play correctly`, 'warning');
+                    if (error.stack) {
+                        debugLog(`  Stack: ${error.stack}`, 'error');
+                    }
+                    throw error; // Re-throw to let caller handle
                 }
+            } else if (recognizedSamples.length > 0) {
+                debugLog('✓ All required sample libraries already loaded', 'success');
             } else {
-                debugLog('All required samples already loaded', 'info');
+                debugLog('No recognized samples to load', 'info');
             }
         }
 
