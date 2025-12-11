@@ -479,6 +479,8 @@
         const loadedLibraries = new Set();
 
         // Map of sample names to their library sources
+        // Note: GM instruments (gm_*) are auto-loaded by Strudel via WebAudio soundfonts
+        // and don't need to be listed here. Only list explicit sample libraries.
         const sampleLibraries = {
             // VCSL samples (piano, etc.)
             'kawai': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
@@ -486,26 +488,6 @@
             'piano1': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
             'clavisynth': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
             'fmpiano': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-
-            // General MIDI instruments from VCSL
-            'gm_violin': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_viola': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_cello': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_contrabass': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_harpsichord': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_piano': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_electric_piano': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_organ': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_acoustic_guitar_nylon': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_acoustic_guitar_steel': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_acoustic_bass': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_electric_bass_finger': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_trumpet': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_french_horn': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_flute': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_synth_strings_1': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_synth_lead_1': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
-            'gm_synth_bass_1': { lib: 'vcsl', url: 'https://raw.githubusercontent.com/felixroos/dough-samples/main/vcsl.json' },
 
             // Dirt samples (drums, etc.)
             'bd': { lib: 'dirt', url: 'github:tidalcycles/dirt-samples' },
@@ -523,28 +505,40 @@
 
             debugLog(`Detected ${usedSamples.length} unique samples in code: ${usedSamples.join(', ')}`, 'info');
 
-            // Check for samples not in the mapping
+            // Categorize samples
+            const gmInstruments = [];
+            const libraryMappedSamples = [];
             const unmappedSamples = [];
-            const recognizedSamples = [];
 
             for (const sample of usedSamples) {
-                if (sampleLibraries[sample]) {
-                    recognizedSamples.push(sample);
+                if (sample.startsWith('gm_')) {
+                    // GM instruments are auto-loaded by Strudel via WebAudio soundfonts
+                    gmInstruments.push(sample);
+                } else if (sampleLibraries[sample]) {
+                    // Explicitly mapped sample libraries
+                    libraryMappedSamples.push(sample);
                 } else {
+                    // Unknown/unmapped samples
                     unmappedSamples.push(sample);
                 }
             }
 
-            // Log unmapped samples as warnings
-            if (unmappedSamples.length > 0) {
-                debugLog(`⚠ WARNING: ${unmappedSamples.length} samples not found in library mapping:`, 'warning');
-                for (const sample of unmappedSamples) {
-                    debugLog(`  ✗ "${sample}" - This sample will not load! Check if it's a valid sample name.`, 'error');
-                }
+            // Log GM instruments (no action needed, auto-loaded)
+            if (gmInstruments.length > 0) {
+                debugLog(`✓ Found ${gmInstruments.length} GM instruments (auto-loaded by Strudel): ${gmInstruments.join(', ')}`, 'success');
             }
 
-            if (recognizedSamples.length > 0) {
-                debugLog(`✓ Recognized ${recognizedSamples.length} samples: ${recognizedSamples.join(', ')}`, 'success');
+            // Log library-mapped samples
+            if (libraryMappedSamples.length > 0) {
+                debugLog(`✓ Found ${libraryMappedSamples.length} library samples: ${libraryMappedSamples.join(', ')}`, 'success');
+            }
+
+            // Log unmapped samples as warnings (only if not GM instruments)
+            if (unmappedSamples.length > 0) {
+                debugLog(`⚠ WARNING: ${unmappedSamples.length} unknown samples not found in library mapping:`, 'warning');
+                for (const sample of unmappedSamples) {
+                    debugLog(`  ✗ "${sample}" - This sample may not load! Check if it's a valid sample name.`, 'error');
+                }
             }
 
             // Determine which libraries need to be loaded
@@ -583,10 +577,12 @@
                     }
                     throw error; // Re-throw to let caller handle
                 }
-            } else if (recognizedSamples.length > 0) {
+            } else if (libraryMappedSamples.length > 0) {
                 debugLog('✓ All required sample libraries already loaded', 'success');
+            } else if (gmInstruments.length > 0) {
+                debugLog('✓ Using GM instruments only (auto-loaded by Strudel)', 'success');
             } else {
-                debugLog('No recognized samples to load', 'info');
+                debugLog('No sample libraries needed for this song', 'info');
             }
         }
 
@@ -658,6 +654,18 @@
                 if (!currentRepl) {
                     debugLog('Repl not initialized, initializing now...', 'warning');
                     await setupStrudel();
+                }
+
+                // Initialize audio on first user interaction (browser requirement)
+                try {
+                    if (typeof initAudioOnFirstClick === 'function') {
+                        debugLog('Initializing audio context...', 'info');
+                        await initAudioOnFirstClick();
+                        debugLog('✓ Audio context initialized', 'success');
+                    }
+                } catch (audioError) {
+                    debugLog(`Audio init warning: ${audioError.message}`, 'warning');
+                    // Continue anyway - might already be initialized
                 }
 
                 const code = songs[songId].code;
