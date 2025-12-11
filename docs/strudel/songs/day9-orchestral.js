@@ -22,8 +22,9 @@ stack(
     [g5 ~ f#5 e5] [d5 ~ c#5 b4] [a4 ~ g4 f#4] [e4 ~ d4 ~]
     [d5 ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("gm_violin")
-    .gain(0.35)
+    .s("sawtooth")
+    .lpf(3500)
+    .gain(0.28)
     .attack(0.08)
     .decay(0.3)
     .sustain(0.6)
@@ -46,8 +47,9 @@ stack(
     [b4 ~ a4 g4] [f#4 ~ e4 d4] [c#4 ~ b3 a3] [g3 ~ f#3 ~]
     [f#4 ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
   \`)
-    .s("gm_cello")
-    .gain(0.28)
+    .s("sawtooth")
+    .lpf(2200)
+    .gain(0.22)
     .attack(0.1)
     .decay(0.3)
     .sustain(0.55)
@@ -55,7 +57,7 @@ stack(
     .room(0.55)
     .slow(12),
 
-  // BRASS - Heroic fanfares and swells (French horn)
+  // BRASS - Heroic fanfares and swells
   note(\`
     [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~] [~ ~ ~ ~]
     <d4 f#4 a4> ~ ~ ~
@@ -70,8 +72,9 @@ stack(
     <d4 f#4 a4 d5> ~ ~ ~
     <d4 f#4 a4 d5> ~ ~ ~
   \`)
-    .s("gm_french_horn")
-    .gain(0.28)
+    .s("square")
+    .lpf(1800)
+    .gain(0.2)
     .attack(0.15)
     .decay(0.3)
     .sustain(0.6)
@@ -79,7 +82,7 @@ stack(
     .room(0.5)
     .slow(12),
 
-  // DEEP BASS - Orchestra bass (contrabass)
+  // DEEP BASS - Orchestra bass and timpani feel
   note(\`
     d2 ~ ~ ~ a1 ~ ~ ~
     d2 ~ ~ ~ a1 ~ ~ ~
@@ -94,8 +97,9 @@ stack(
     g1 ~ a1 ~ d2 ~ ~ ~
     d2 ~ ~ ~ ~ ~ ~ ~
   \`)
-    .s("gm_contrabass")
-    .gain(0.45)
+    .s("sawtooth")
+    .lpf(350)
+    .gain(0.38)
     .attack(0.02)
     .decay(0.25)
     .sustain(0.6)
@@ -103,7 +107,7 @@ stack(
     .room(0.45)
     .slow(12),
 
-  // STRING PAD - Lush orchestral bed (synth strings)
+  // STRING PAD - Lush orchestral bed
   note(\`
     <d3 f#3 a3 d4> ~ ~ ~
     <a2 c#3 e3 a3> ~ ~ ~
@@ -118,8 +122,9 @@ stack(
     <g2 b2 d3 g3> ~ <a2 c#3 e3 a3> ~
     <d3 f#3 a3 d4> ~ ~ ~
   \`)
-    .s("gm_synth_strings_1")
-    .gain(0.2)
+    .s("sine")
+    .lpf(1600)
+    .gain(0.14)
     .attack(0.4)
     .decay(0.3)
     .sustain(0.7)

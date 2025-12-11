@@ -92,29 +92,25 @@ stack(
     .release(0.15)
     .slow(9),
 
-  // KICK - Four on the floor (LinnDrum for 80s authenticity)
+  // KICK - Four on the floor
   s("bd bd bd bd")
-    .bank("LinnDrum")
     .gain(0.75)
     .slow(1),
 
   // SNARE - Gated 80s snare
   s("~ sd ~ sd")
-    .bank("LinnDrum")
     .gain(0.6)
     .room(0.4)
     .slow(1),
 
   // HI-HAT - Driving eighths with open hat accents
   s("hh hh [hh oh] hh hh hh [hh oh] hh")
-    .bank("LinnDrum")
     .gain(0.32)
     .lpf(8000)
     .slow(1),
 
   // CLAPS - Layered with snare
   s("~ cp ~ cp")
-    .bank("LinnDrum")
     .gain(0.35)
     .room(0.5)
     .slow(1)

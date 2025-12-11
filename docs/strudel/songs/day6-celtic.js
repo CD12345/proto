@@ -26,8 +26,9 @@ stack(
     [a5 b5 c6 b5] [a5 g5 f#5 e5] [d5 e5 f#5 g5] [a5 g5 f#5 e5]
     [f#5 g5 a5 b5] [c6 b5 a5 g5] [f#5 e5 d5 c5] [d5 ~ ~ ~]
   \`)
-    .s("gm_violin")
-    .gain(0.38)
+    .s("triangle")
+    .lpf(3500)
+    .gain(0.32)
     .attack(0.01)
     .decay(0.1)
     .sustain(0.4)
@@ -54,8 +55,9 @@ stack(
     [f#5 g5 a5 g5] [f#5 e5 d5 c5] [f#4 g4 a4 b4] [c5 b4 a4 g4]
     [a4 b4 c5 d5] [e5 d5 c5 b4] [a4 g4 f#4 e4] [f#4 ~ ~ ~]
   \`)
-    .s("gm_violin")
-    .gain(0.28)
+    .s("triangle")
+    .lpf(2800)
+    .gain(0.22)
     .attack(0.01)
     .decay(0.1)
     .sustain(0.35)
@@ -71,7 +73,7 @@ stack(
     .gain(0.45)
     .slow(2),
 
-  // GUITAR STRUM - Rhythmic chordal accompaniment (acoustic guitar)
+  // GUITAR STRUM - Rhythmic chordal accompaniment
   note(\`
     <d3 a3 d4> ~ <d3 a3 d4> <c3 g3 c4>
     <d3 a3 d4> <c3 g3 c4> <d3 a3 d4> ~
@@ -82,8 +84,9 @@ stack(
     <d3 a3 d4> ~ <d3 a3 d4> <c3 g3 c4>
     <g2 d3 g3> <a2 e3 a3> <d3 a3 d4> ~
   \`)
-    .s("gm_acoustic_guitar_steel")
-    .gain(0.25)
+    .s("triangle")
+    .lpf(1800)
+    .gain(0.18)
     .attack(0.01)
     .decay(0.12)
     .sustain(0.3)
@@ -91,7 +94,7 @@ stack(
     .room(0.35)
     .slow(8),
 
-  // DRONE BASS - Traditional Celtic drone on D (cello for rich drone)
+  // DRONE BASS - Traditional Celtic drone on D
   note(\`
     d2 ~ d2 ~ d2 ~ d2 ~
     d2 ~ d2 ~ d2 ~ d2 ~
@@ -102,8 +105,9 @@ stack(
     a1 ~ a1 ~ a1 ~ a1 ~
     g1 a1 d2 ~ d2 ~ ~ ~
   \`)
-    .s("gm_cello")
-    .gain(0.42)
+    .s("sawtooth")
+    .lpf(400)
+    .gain(0.35)
     .attack(0.02)
     .decay(0.2)
     .sustain(0.6)
