@@ -6,6 +6,8 @@
     <title>Strudel Music Player</title>
     <!-- Load Strudel Web library (recommended approach from docs) -->
     <script src="https://unpkg.com/@strudel/web@1.2.5"></script>
+    <!-- Load Strudel Soundfonts for GM instruments (gm_piano, gm_violin, etc.) -->
+    <script src="https://unpkg.com/@strudel/soundfonts@1.2.6"></script>
     <style>
         * {
             margin: 0;
@@ -594,7 +596,17 @@
                 // We'll load samples dynamically based on what each song needs
                 await initStrudel();
 
-                debugLog('✓ Strudel initialized (samples will load on-demand)', 'success');
+                // Register GM soundfonts (gm_piano, gm_violin, etc.)
+                // These are lazy-loaded when first used
+                if (typeof registerSoundfonts === 'function') {
+                    debugLog('Registering GM soundfonts...', 'info');
+                    await registerSoundfonts();
+                    debugLog('✓ GM soundfonts registered', 'success');
+                } else {
+                    debugLog('⚠ registerSoundfonts not available - GM instruments may not work', 'warning');
+                }
+
+                debugLog('✓ Strudel initialized with soundfont support', 'success');
                 currentRepl = {
                     initialized: true
                 };
