@@ -12,6 +12,7 @@ export { song as day7Bossanova } from './day7-bossanova.js';
 export { song as day8Rnb } from './day8-rnb.js';
 export { song as day9Orchestral } from './day9-orchestral.js';
 export { song as day10Disco } from './day10-disco.js';
+export { song as testSamples } from './test-samples.js';
 
 // Export as array for easy iteration
 import { song as baroque } from './day1-baroque.js';
@@ -24,6 +25,7 @@ import { song as bossanova } from './day7-bossanova.js';
 import { song as rnb } from './day8-rnb.js';
 import { song as orchestral } from './day9-orchestral.js';
 import { song as disco } from './day10-disco.js';
+import { song as testSamplesData } from './test-samples.js';
 
 export const songs = [
   { id: 'day1-baroque', ...baroque },
@@ -35,5 +37,6 @@ export const songs = [
   { id: 'day7-bossanova', ...bossanova },
   { id: 'day8-rnb', ...rnb },
   { id: 'day9-orchestral', ...orchestral },
-  { id: 'day10-disco', ...disco }
+  { id: 'day10-disco', ...disco },
+  { id: 'test-samples', ...testSamplesData }
 ];
