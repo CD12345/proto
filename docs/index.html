@@ -6,7 +6,11 @@
     <title>Strudel Music Player</title>
     <!-- Load Strudel Web library (recommended approach from docs) -->
     <script src="https://unpkg.com/@strudel/web@1.2.5"></script>
-    <!-- Load Strudel Soundfonts for GM instruments (gm_piano, gm_violin, etc.) -->
+    <!--
+        Load Strudel Soundfonts for GM instruments (gm_piano, gm_violin, etc.)
+        The package is ESM-only, so we will also dynamically import it later if
+        the global helper isn't exposed by this script tag.
+    -->
     <script src="https://unpkg.com/@strudel/soundfonts@1.2.6"></script>
     <style>
         * {
@@ -598,9 +602,32 @@
 
                 // Register GM soundfonts (gm_piano, gm_violin, etc.)
                 // These are lazy-loaded when first used
-                if (typeof registerSoundfonts === 'function') {
+                let registerSoundfontsFn = typeof registerSoundfonts === 'function'
+                    ? registerSoundfonts
+                    : null;
+
+                if (!registerSoundfontsFn) {
+                    debugLog('registerSoundfonts not found globally, loading module...', 'warning');
+                    const soundfontsModule = await import('https://unpkg.com/@strudel/soundfonts@1.2.6/dist/soundfonts.js?module')
+                        .catch(importError => {
+                            debugLog(`✗ Failed to dynamically import soundfonts: ${importError.message}`, 'error');
+                            return null;
+                        });
+                    if (soundfontsModule) {
+                        registerSoundfontsFn = soundfontsModule.registerSoundfonts;
+                        if (registerSoundfontsFn) {
+                            // Expose globally so later calls can reuse it
+                            window.registerSoundfonts = registerSoundfontsFn;
+                            debugLog('✓ registerSoundfonts loaded via dynamic import', 'success');
+                        } else {
+                            debugLog('✗ registerSoundfonts still not available after dynamic import', 'error');
+                        }
+                    }
+                }
+
+                if (registerSoundfontsFn) {
                     debugLog('Registering GM soundfonts...', 'info');
-                    await registerSoundfonts();
+                    await registerSoundfontsFn();
                     debugLog('✓ GM soundfonts registered', 'success');
                 } else {
                     debugLog('⚠ registerSoundfonts not available - GM instruments may not work', 'warning');
