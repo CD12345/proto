@@ -397,12 +397,10 @@
             window.initialDebugLog('✓ Module script started executing', 'success');
         }
 
-        // Import soundfonts support (ES module import for proper loading)
-        import { registerSoundfonts } from 'https://unpkg.com/@strudel/soundfonts@1.2.6/index.mjs';
-
         let currentRepl = null;
         let currentPattern = null;
         const songs = {};
+        let registerSoundfonts = null;
 
         const elements = {
             songSelect: document.getElementById('songSelect'),
@@ -598,12 +596,21 @@
                 await initStrudel();
 
                 // Register GM soundfonts (gm_piano, gm_violin, etc.)
-                // These are loaded from the @strudel/soundfonts package
-                debugLog('Registering GM soundfonts...', 'info');
-                await registerSoundfonts();
-                debugLog('✓ GM soundfonts registered successfully', 'success');
+                // Load the soundfonts package dynamically to avoid blocking module execution
+                try {
+                    debugLog('Loading soundfonts package...', 'info');
+                    const soundfontsModule = await import('https://unpkg.com/@strudel/soundfonts@1.2.6/index.mjs');
+                    registerSoundfonts = soundfontsModule.registerSoundfonts;
 
-                debugLog('✓ Strudel initialized with soundfont support', 'success');
+                    debugLog('Registering GM soundfonts...', 'info');
+                    await registerSoundfonts();
+                    debugLog('✓ GM soundfonts registered successfully', 'success');
+                } catch (soundfontError) {
+                    debugLog(`⚠ Warning: Could not load soundfonts: ${soundfontError.message}`, 'warning');
+                    debugLog('GM instruments may not work. Continuing without soundfonts...', 'warning');
+                }
+
+                debugLog('✓ Strudel initialized', 'success');
                 currentRepl = {
                     initialized: true
                 };
