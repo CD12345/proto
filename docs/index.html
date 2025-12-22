@@ -610,6 +610,17 @@
                     debugLog('GM instruments may not work. Continuing without soundfonts...', 'warning');
                 }
 
+                // Load drum machine samples
+                // These are required for .bank() patterns like RolandTR808, LinnDrum, etc.
+                try {
+                    debugLog('Loading drum machine samples...', 'info');
+                    await samples('github:tidalcycles/Dirt-Samples');
+                    debugLog('✓ Drum machine samples loaded successfully', 'success');
+                } catch (drumError) {
+                    debugLog(`⚠ Warning: Could not load drum samples: ${drumError.message}`, 'warning');
+                    debugLog('Drum machine banks may not work. Continuing without drum samples...', 'warning');
+                }
+
                 debugLog('✓ Strudel initialized', 'success');
                 currentRepl = {
                     initialized: true
