@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strudel Music Player</title>
     <!-- Load Strudel Web library (recommended approach from docs) -->
-    <script src="https://unpkg.com/@strudel/web@1.2.5"></script>
+    <script src="https://unpkg.com/@strudel/web@1.2.6"></script>
     <style>
         * {
             margin: 0;
@@ -627,13 +627,44 @@
                 // We'll load samples dynamically based on what each song needs
                 await initStrudel();
 
-                // NOTE: GM soundfonts (gm_piano, gm_violin, etc.) are currently disabled
-                // The @strudel/soundfonts package has dependency resolution issues when loading via CDN
-                // Attempted unpkg, esm.sh, and jsdelivr - all fail with different module errors
-                // Strudel's built-in oscillators (sawtooth, square, sine, triangle) still work
-                // Drum machines via Dirt-Samples (loaded below) still work
-                // TODO: Find a working CDN solution or bundle soundfonts differently
-                debugLog('ℹ GM soundfonts not loaded - using oscillators and drum samples only', 'info');
+                // DEBUG: Check what's available globally from @strudel/web
+                debugLog('=== DEBUGGING STRUDEL GLOBALS ===', 'info');
+                debugLog(`typeof loadSoundfont: ${typeof loadSoundfont}`, 'info');
+                debugLog(`typeof registerSoundfonts: ${typeof registerSoundfonts}`, 'info');
+                debugLog(`typeof registerSound: ${typeof registerSound}`, 'info');
+                debugLog(`typeof samples: ${typeof samples}`, 'info');
+
+                // Check if there are any soundfont-related globals
+                const soundfontGlobals = Object.keys(window).filter(k =>
+                    k.toLowerCase().includes('sound') || k.toLowerCase().includes('font')
+                );
+                debugLog(`Soundfont-related globals: ${soundfontGlobals.join(', ')}`, 'info');
+
+                // Try different approaches to load GM soundfonts
+                try {
+                    // Approach 1: Check if loadSoundfont exists and try loading GM soundfonts
+                    if (typeof loadSoundfont !== 'undefined') {
+                        debugLog('Attempting to load GM soundfonts via loadSoundfont...', 'info');
+                        // Try loading a specific GM soundfont URL if available
+                        debugLog('loadSoundfont function exists but no default GM URL known', 'warning');
+                    }
+
+                    // Approach 2: Check if registerSoundfonts exists
+                    if (typeof registerSoundfonts !== 'undefined') {
+                        debugLog('Found registerSoundfonts function! Calling it...', 'success');
+                        await registerSoundfonts();
+                        debugLog('✓ GM soundfonts registered successfully via global function', 'success');
+                    } else {
+                        debugLog('registerSoundfonts not found in global scope', 'warning');
+                    }
+
+                    // Approach 3: Check if we can use prebake with initStrudel
+                    debugLog('Checking if initStrudel supports soundfont prebake...', 'info');
+
+                } catch (soundfontError) {
+                    debugLog(`Error during soundfont initialization: ${soundfontError.message}`, 'error');
+                    debugLog(`Stack: ${soundfontError.stack}`, 'error');
+                }
 
                 // Load drum machine samples
                 // These are required for .bank() patterns like RolandTR808, LinnDrum, etc.
