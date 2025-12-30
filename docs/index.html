@@ -499,52 +499,88 @@
         };
 
         async function detectAndLoadSamples(code) {
-            // Extract all .s("...") calls from the code
+            // Built-in oscillators (WebAudio native, no loading needed)
+            const builtInOscillators = new Set([
+                'sine', 'triangle', 'sawtooth', 'square',
+                'white', 'pink', 'brown' // noise generators
+            ]);
+
+            // Extract all .s("...") calls from the code and parse Strudel mini-notation
             const sampleRegex = /\.s\(["']([^"']+)["']\)/g;
             const matches = [...code.matchAll(sampleRegex)];
-            const usedSamples = [...new Set(matches.map(m => m[1]))];
+            const allSamples = new Set();
 
-            debugLog(`Detected ${usedSamples.length} unique samples in code: ${usedSamples.join(', ')}`, 'info');
+            // Parse Strudel mini-notation to extract individual sample names
+            for (const match of matches) {
+                const miniNotation = match[1];
+                // Remove Strudel syntax: brackets, parens, angle brackets, operators, numbers
+                // Then split on whitespace to get individual sample names
+                const samples = miniNotation
+                    .replace(/[\[\]()<>*\/~\d:,|]/g, ' ') // Remove mini-notation syntax
+                    .split(/\s+/) // Split on whitespace
+                    .filter(s => s.length > 0); // Remove empty strings
+
+                samples.forEach(s => allSamples.add(s));
+            }
+
+            // Extract all .bank("...") calls for drum machines
+            const bankRegex = /\.bank\(["']([^"']+)["']\)/g;
+            const bankMatches = [...code.matchAll(bankRegex)];
+            const usedBanks = [...new Set(bankMatches.map(m => m[1]))];
 
             // Categorize samples
             const gmInstruments = [];
+            const oscillators = [];
+            const dirtSamples = [];
             const libraryMappedSamples = [];
             const unmappedSamples = [];
 
-            for (const sample of usedSamples) {
+            for (const sample of allSamples) {
                 if (sample.startsWith('gm_')) {
                     // GM instruments are auto-loaded by Strudel via WebAudio soundfonts
                     gmInstruments.push(sample);
+                } else if (builtInOscillators.has(sample)) {
+                    // Built-in WebAudio oscillators (always available)
+                    oscillators.push(sample);
+                } else if (sampleLibraries[sample]?.lib === 'dirt') {
+                    // Dirt samples that are explicitly mapped
+                    dirtSamples.push(sample);
                 } else if (sampleLibraries[sample]) {
-                    // Explicitly mapped sample libraries
+                    // Other explicitly mapped sample libraries
                     libraryMappedSamples.push(sample);
                 } else {
-                    // Unknown/unmapped samples
+                    // Unmapped samples (likely from preloaded Dirt-Samples)
                     unmappedSamples.push(sample);
                 }
             }
 
-            // Log GM instruments (no action needed, auto-loaded)
+            // Log categorized samples with clear status
+            debugLog(`Detected ${allSamples.size} unique sample(s) in song code`, 'info');
+
             if (gmInstruments.length > 0) {
-                debugLog(`✓ Found ${gmInstruments.length} GM instruments (auto-loaded by Strudel): ${gmInstruments.join(', ')}`, 'success');
+                debugLog(`✓ ${gmInstruments.length} GM instrument(s): ${gmInstruments.join(', ')}`, 'success');
             }
 
-            // Log library-mapped samples
-            if (libraryMappedSamples.length > 0) {
-                debugLog(`✓ Found ${libraryMappedSamples.length} library samples: ${libraryMappedSamples.join(', ')}`, 'success');
+            if (oscillators.length > 0) {
+                debugLog(`✓ ${oscillators.length} built-in oscillator(s): ${oscillators.join(', ')}`, 'success');
             }
 
-            // Log unmapped samples as warnings (only if not GM instruments)
+            if (dirtSamples.length > 0) {
+                debugLog(`✓ ${dirtSamples.length} Dirt sample(s): ${dirtSamples.join(', ')}`, 'success');
+            }
+
+            if (usedBanks.length > 0) {
+                debugLog(`✓ ${usedBanks.length} drum machine bank(s): ${usedBanks.join(', ')}`, 'success');
+            }
+
             if (unmappedSamples.length > 0) {
-                debugLog(`⚠ WARNING: ${unmappedSamples.length} unknown samples not found in library mapping:`, 'warning');
-                for (const sample of unmappedSamples) {
-                    debugLog(`  ✗ "${sample}" - This sample may not load! Check if it's a valid sample name.`, 'error');
-                }
+                // These are likely from preloaded Dirt-Samples, so just log as info
+                debugLog(`ℹ ${unmappedSamples.length} additional sample(s) (from preloaded Dirt-Samples): ${unmappedSamples.join(', ')}`, 'info');
             }
 
             // Determine which libraries need to be loaded
             const librariesToLoad = new Map();
-            for (const sample of usedSamples) {
+            for (const sample of allSamples) {
                 if (sampleLibraries[sample]) {
                     const { lib, url } = sampleLibraries[sample];
                     if (!loadedLibraries.has(lib)) {
@@ -555,7 +591,7 @@
 
             // Load the required libraries
             if (librariesToLoad.size > 0) {
-                debugLog(`Loading ${librariesToLoad.size} sample libraries...`, 'info');
+                debugLog(`Loading ${librariesToLoad.size} additional sample library(ies)...`, 'info');
                 const urls = [...librariesToLoad.values()];
 
                 for (const [lib, url] of librariesToLoad) {
@@ -578,12 +614,8 @@
                     }
                     throw error; // Re-throw to let caller handle
                 }
-            } else if (libraryMappedSamples.length > 0) {
-                debugLog('✓ All required sample libraries already loaded', 'success');
-            } else if (gmInstruments.length > 0) {
-                debugLog('✓ Using GM instruments only (auto-loaded by Strudel)', 'success');
             } else {
-                debugLog('No sample libraries needed for this song', 'info');
+                debugLog('✓ All required samples are preloaded and ready', 'success');
             }
         }
 
