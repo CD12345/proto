@@ -627,21 +627,13 @@
                 // We'll load samples dynamically based on what each song needs
                 await initStrudel();
 
-                // Register GM soundfonts (gm_piano, gm_violin, etc.)
-                // Load the soundfonts package dynamically to avoid blocking module execution
-                // Use jsdelivr +esm endpoint which auto-resolves dependencies and bundles modules
-                try {
-                    debugLog('Loading soundfonts package...', 'info');
-                    const soundfontsModule = await import('https://cdn.jsdelivr.net/npm/@strudel/soundfonts@1.2.6/+esm');
-                    registerSoundfonts = soundfontsModule.registerSoundfonts;
-
-                    debugLog('Registering GM soundfonts...', 'info');
-                    await registerSoundfonts();
-                    debugLog('✓ GM soundfonts registered successfully', 'success');
-                } catch (soundfontError) {
-                    debugLog(`⚠ Warning: Could not load soundfonts: ${soundfontError.message}`, 'warning');
-                    debugLog('GM instruments may not work. Continuing without soundfonts...', 'warning');
-                }
+                // NOTE: GM soundfonts (gm_piano, gm_violin, etc.) are currently disabled
+                // The @strudel/soundfonts package has dependency resolution issues when loading via CDN
+                // Attempted unpkg, esm.sh, and jsdelivr - all fail with different module errors
+                // Strudel's built-in oscillators (sawtooth, square, sine, triangle) still work
+                // Drum machines via Dirt-Samples (loaded below) still work
+                // TODO: Find a working CDN solution or bundle soundfonts differently
+                debugLog('ℹ GM soundfonts not loaded - using oscillators and drum samples only', 'info');
 
                 // Load drum machine samples
                 // These are required for .bank() patterns like RolandTR808, LinnDrum, etc.
