@@ -629,9 +629,10 @@
 
                 // Register GM soundfonts (gm_piano, gm_violin, etc.)
                 // Load the soundfonts package dynamically to avoid blocking module execution
+                // Use esm.sh instead of unpkg because it automatically resolves dependencies like 'sfumato'
                 try {
                     debugLog('Loading soundfonts package...', 'info');
-                    const soundfontsModule = await import('https://unpkg.com/@strudel/soundfonts@1.2.6/index.mjs');
+                    const soundfontsModule = await import('https://esm.sh/@strudel/soundfonts@1.2.6');
                     registerSoundfonts = soundfontsModule.registerSoundfonts;
 
                     debugLog('Registering GM soundfonts...', 'info');
