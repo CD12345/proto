@@ -623,9 +623,31 @@
             try {
                 debugLog('Initializing Strudel (using recommended @strudel/web approach)...', 'info');
 
-                // Initialize Strudel without prebaked samples
-                // We'll load samples dynamically based on what each song needs
-                await initStrudel();
+                // Initialize Strudel WITH prebake for soundfonts
+                // Based on Strudel blog: PR #550 fixed "load soundfonts in prebake"
+                debugLog('Attempting to load soundfonts via prebake...', 'info');
+                try {
+                    await initStrudel({
+                        prebake: async () => {
+                            debugLog('Running prebake function...', 'info');
+                            // Try importing soundfonts package dynamically within prebake
+                            try {
+                                const sf = await import('https://cdn.jsdelivr.net/npm/@strudel/soundfonts@1.2.6/+esm');
+                                debugLog(`Soundfonts module loaded: ${Object.keys(sf).join(', ')}`, 'info');
+                                if (sf.registerSoundfonts) {
+                                    await sf.registerSoundfonts();
+                                    debugLog('✓ Soundfonts registered via prebake!', 'success');
+                                }
+                            } catch (sfErr) {
+                                debugLog(`Prebake soundfont import failed: ${sfErr.message}`, 'warning');
+                            }
+                        }
+                    });
+                    debugLog('✓ initStrudel with prebake completed', 'success');
+                } catch (initErr) {
+                    debugLog(`initStrudel failed: ${initErr.message}, trying without prebake...`, 'warning');
+                    await initStrudel();
+                }
 
                 // DEBUG: Check what's available globally from @strudel/web
                 debugLog('=== DEBUGGING STRUDEL GLOBALS ===', 'info');
