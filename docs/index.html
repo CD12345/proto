@@ -688,6 +688,23 @@
                     debugLog(`Stack: ${soundfontError.stack}`, 'error');
                 }
 
+                // Test if GM instruments work WITHOUT any explicit soundfont loading
+                debugLog('Testing if GM instruments are already available...', 'info');
+                try {
+                    // Try to get sound info for a GM instrument
+                    if (typeof getSound === 'function') {
+                        const gmTest = getSound('gm_piano');
+                        debugLog(`gm_piano sound info: ${JSON.stringify(gmTest)}`, 'info');
+                    }
+                    // Check soundMap for GM instruments
+                    if (typeof soundMap !== 'undefined' && soundMap) {
+                        const gmKeys = Object.keys(soundMap).filter(k => k.startsWith('gm_'));
+                        debugLog(`Found ${gmKeys.length} GM instruments in soundMap: ${gmKeys.slice(0, 5).join(', ')}...`, 'info');
+                    }
+                } catch (testErr) {
+                    debugLog(`GM instrument test error: ${testErr.message}`, 'warning');
+                }
+
                 // Load drum machine samples
                 // These are required for .bank() patterns like RolandTR808, LinnDrum, etc.
                 try {
